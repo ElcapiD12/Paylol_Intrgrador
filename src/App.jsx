@@ -1,9 +1,35 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import NotFound from './pages/NotFound';
+import './index.css';
+
 function App() {
   return (
-    <div className="bg-blue-500 text-white p-8 text-center">
-      <h1 className="text-4xl font-bold">¡Tailwind funciona! 🎉</h1>
-    </div>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Ruta pública */}
+          <Route path="/" element={<LoginPage />} />
+          
+          {/* Rutas protegidas */}
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Ruta 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

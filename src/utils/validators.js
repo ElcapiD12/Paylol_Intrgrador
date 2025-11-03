@@ -1,10 +1,13 @@
+// Importar validarEmail desde helpers
+import { validarEmail } from './helpers';
+
 // Validar formulario de login
 export const validarLogin = (email, password) => {
   const errores = {};
   
   if (!email) {
     errores.email = 'El email es requerido';
-  } else if (!validarEmail(email)) {
+  } else if (!validarEmail(email)) {  // ← Aquí usa validarEmail
     errores.email = 'Email inválido';
   }
   
