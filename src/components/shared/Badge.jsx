@@ -1,4 +1,4 @@
-export function Badge({ 
+export default function Badge({ 
   children, 
   variant = 'default',
   size = 'md',

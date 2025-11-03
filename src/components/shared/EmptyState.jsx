@@ -1,4 +1,4 @@
-export function EmptyState({ 
+export default function EmptyState({ 
   icon = '📭',
   title = 'No hay datos',
   message = 'No se encontró información para mostrar',

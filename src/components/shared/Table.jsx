@@ -1,4 +1,4 @@
-export function Table({ columns, data, onRowClick }) {
+export default function Table({ columns, data, onRowClick }) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200 rounded-lg">

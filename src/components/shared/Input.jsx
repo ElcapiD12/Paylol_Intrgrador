@@ -1,4 +1,4 @@
-export function Input({ 
+export default function Input({ 
   label, 
   error, 
   helperText,

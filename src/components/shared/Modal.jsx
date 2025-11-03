@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 
-export function Modal({ 
-  isOpen, 
+export default function Modal({ 
+  isOpen = false, 
   onClose, 
   title, 
   children,
   size = 'md',
   showCloseButton = true,
 }) {
+  console.log("🔍 Modal renderizado con isOpen:", isOpen);
   const sizes = {
     sm: 'max-w-md',
     md: 'max-w-lg',
@@ -17,16 +18,11 @@ export function Modal({
 
   // Bloquear scroll del body cuando el modal está abierto
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    document.body.style.overflow = isOpen ? 'hidden' : 'unset';
+    return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
 
+  // Si no está abierto, no renderizamos nada
   if (!isOpen) return null;
 
   return (

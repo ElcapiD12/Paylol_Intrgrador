@@ -1,4 +1,4 @@
-export function Loader({ size = 'md', text = '' }) {
+export default function Loader({ size = 'md', text = '' }) {
   const sizes = {
     sm: 'h-8 w-8',
     md: 'h-12 w-12',

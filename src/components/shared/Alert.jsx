@@ -1,4 +1,4 @@
-export function Alert({ 
+export default function Alert({ 
   type = 'info', 
   title,
   message, 
