@@ -1,9 +1,13 @@
+import React from 'react';
+import ServiciosEscolares from './components/servicios-escolares/ServiciosEscolaresDemo';
+import './App.css';
+
 function App() {
   return (
-    <div className="bg-blue-500 text-white p-8 text-center">
-      <h1 className="text-4xl font-bold">¡Tailwind funciona! 🎉</h1>
+    <div className="App">
+      <ServiciosEscolares />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -38,22 +38,41 @@ export const pagosEjemplo = [
   },
 ];
 
+// ACTUALIZADO: Solicitudes con todos los campos necesarios
 export const solicitudesEjemplo = [
   {
-    id: '1',
+    id: 1,
+    folio: 'CONST-2024-001234',
     tipo: 'Constancia de Estudios',
-    estado: 'en_proceso',
-    fechaSolicitud: '2025-10-20',
-    monto: 150,
+    motivo: 'Trámite de beca universitaria',
+    dirigidoA: 'CONACYT',
+    costo: 150,
+    estado: 'pendiente',
+    fecha: '2025-10-20T10:00:00.000Z',
+    estudiante: 'Juan Pérez García'
   },
   {
-    id: '2',
-    tipo: 'Constancia de Calificaciones',
-    estado: 'completado',
-    fechaSolicitud: '2025-09-15',
-    fechaEntrega: '2025-09-20',
-    monto: 150,
+    id: 2,
+    folio: 'CONST-2024-001235',
+    tipo: 'Constancia con Calificaciones',
+    motivo: 'Solicitud de empleo',
+    dirigidoA: 'Empresa Tech Solutions',
+    costo: 150,
+    estado: 'aprobado',
+    fecha: '2025-10-15T14:30:00.000Z',
+    estudiante: 'María García López'
   },
+  {
+    id: 3,
+    folio: 'CONST-2024-001236',
+    tipo: 'Carta de Buena Conducta',
+    motivo: 'Trámite de visa',
+    dirigidoA: 'Embajada de Estados Unidos',
+    costo: 150,
+    estado: 'rechazado',
+    fecha: '2025-10-10T09:15:00.000Z',
+    estudiante: 'Pedro Ramírez'
+  }
 ];
 
 export const librosEjemplo = [
