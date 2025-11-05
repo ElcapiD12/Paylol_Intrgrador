@@ -4,6 +4,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import NotFound from './pages/NotFound';
+import IdiomasPage from './pages/IdiomasPage';
 import './index.css';
 
 function App() {
@@ -15,13 +16,22 @@ function App() {
           <Route path="/" element={<LoginPage />} />
           
           {/* Rutas protegidas */}
-          <Route 
-            path="/dashboard" 
+          <Route
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <DashboardPage />
               </ProtectedRoute>
-            } 
+            }
+          />
+
+          <Route
+            path="/idiomas"
+            element={
+              <ProtectedRoute>
+                <IdiomasPage />
+              </ProtectedRoute>
+            }
           />
 
           {/* Ruta 404 */}

@@ -79,16 +79,26 @@ export const librosEjemplo = [
   {
     id: '1',
     titulo: 'English File Intermediate',
-    nivel: 'intermedio',
+    nivel: 'Intermedio',
     precio: 800,
     isbn: '978-0194035507',
+    descripcion: 'Libro completo para nivel intermedio con ejercicios prácticos',
   },
   {
     id: '2',
     titulo: 'Oxford Advanced Learner',
-    nivel: 'avanzado',
+    nivel: 'Avanzado',
     precio: 1200,
     isbn: '978-0194798792',
+    descripcion: 'Diccionario y libro de aprendizaje para nivel avanzado',
+  },
+  {
+    id: '3',
+    titulo: 'English File Elementary',
+    nivel: 'Básico',
+    precio: 750,
+    isbn: '978-0194598552',
+    descripcion: 'Perfecto para comenzar a aprender inglés desde cero',
   },
 ];
 
