@@ -1,35 +1,30 @@
-export function Table({ columns, data, onRowClick }) {
-  return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-        <thead className="bg-gray-50">
-          <tr>
-            {columns.map((column, index) => (
-              <th
-                key={index}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {column.header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {data.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              onClick={() => onRowClick && onRowClick(row)}
-              className={onRowClick ? 'hover:bg-gray-50 cursor-pointer' : ''}
-            >
-              {columns.map((column, colIndex) => (
-                <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {column.render ? column.render(row) : row[column.key]}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+// src/components/shared/Badge.jsx
+import React from 'react';
+
+const getBadgeClasses = (type) => {
+    switch (type) {
+        case 'success':
+            return 'bg-green-100 text-green-800';
+        case 'warning':
+            return 'bg-yellow-100 text-yellow-800';
+        case 'info':
+            return 'bg-blue-100 text-blue-800';
+        case 'danger':
+            return 'bg-red-100 text-red-800';
+        default:
+            return 'bg-gray-100 text-gray-800';
+    }
+};
+
+const Badge = ({ children, type = 'default' }) => {
+    const classes = getBadgeClasses(type);
+    return (
+        <span
+            className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${classes}`}
+        >
+            {children}
+        </span>
+    );
+};
+
+export default Badge;

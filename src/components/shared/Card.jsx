@@ -1,30 +1,17 @@
-export function Card({ 
-  children, 
-  title, 
-  subtitle,
-  className = '',
-  padding = 'normal',
-  ...props 
-}) {
-  const paddings = {
-    none: '',
-    sm: 'p-4',
-    normal: 'p-6',
-    lg: 'p-8',
-  };
+// src/components/shared/Card.jsx
+import React from 'react';
 
-  return (
-    <div 
-      className={`bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow ${paddings[padding]} ${className}`}
-      {...props}
-    >
-      {title && (
-        <div className="mb-4 border-b pb-4">
-          <h3 className="text-xl font-semibold text-gray-800">{title}</h3>
-          {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
+const Card = ({ title, children, className = '' }) => {
+    return (
+        <div className={`bg-white p-6 shadow-md rounded-lg ${className}`}>
+            {title && (
+                <h3 className="text-xl font-semibold mb-4 border-b pb-2 text-gray-700">
+                    {title}
+                </h3>
+            )}
+            {children}
         </div>
-      )}
-      {children}
-    </div>
-  );
-}
+    );
+};
+
+export default Card;
