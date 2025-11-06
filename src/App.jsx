@@ -33,6 +33,7 @@ function App() {
           >
             {/* Rutas anidadas dentro del Dashboard */}
             <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="servicios" element={<ServiciosPage />} />
             <Route path="pagos" element={<PagosPage />} />
             <Route path="idiomas" element={<IdiomasPage />} />
             <Route path="servicios" element={<ServiciosPage />} />
