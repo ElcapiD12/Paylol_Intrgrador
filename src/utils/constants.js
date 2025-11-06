@@ -90,3 +90,13 @@ export const MENSAJES_EXITO = {
   PERFIL_ACTUALIZADO: 'Perfil actualizado correctamente',
   REGISTRO_EXITOSO: 'Registro completado exitosamente',
 };
+
+
+// Estados de extraordinarios (agregado de Montse)
+export const ESTADOS_EXTRAORDINARIO = {
+  DISPONIBLE: 'Disponible',
+  SOLICITADO: 'Solicitado',
+  AUTORIZADO: 'Autorizado',
+  RECHAZADO: 'Rechazado',
+  PAGADO: 'Pagado',
+};

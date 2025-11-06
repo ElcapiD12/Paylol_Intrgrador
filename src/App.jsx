@@ -11,6 +11,7 @@ import PerfilPage from "./pages/PerfilPage";
 import LogoutPage from "./pages/LogoutPage";
 import NotFound from './pages/NotFound';
 import './index.css';
+import JefaturaPage from "./pages/JefaturaPage";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="idiomas" element={<IdiomasPage />} />
             <Route path="servicios" element={<ServiciosPage />} />
             <Route path="perfil" element={<PerfilPage />} />
+            <Route path="jefatura" element={<JefaturaPage />} />
             <Route path="cerrar-sesion" element={<LogoutPage />} />
           </Route>
 

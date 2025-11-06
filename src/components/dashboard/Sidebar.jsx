@@ -1,17 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
-import { FaHome, FaCreditCard, FaGlobe, FaUser, FaSignOutAlt, FaUniversity } from "react-icons/fa";
-
+import { FaHome, FaCreditCard, FaGlobe, FaUser, FaSignOutAlt, FaUniversity, FaChalkboardTeacher } from "react-icons/fa";
 export default function Sidebar() {
   const location = useLocation();
 
   const links = [
-    { name: "Dashboard", path: "/dashboard", icon: <FaHome /> },
-    { name: "Pagos", path: "/pagos", icon: <FaCreditCard /> },
-    { name: "Idiomas", path: "/idiomas", icon: <FaGlobe /> },
-    { name: "Servicios Escolares", path: "/servicios", icon: <FaUniversity /> },
-    { name: "Mi Perfil", path: "/perfil", icon: <FaUser /> },
-    { name: "Cerrar Sesión", path: "/cerrar-sesion", icon: <FaSignOutAlt /> },
-  ];
+  { name: "Dashboard", path: "/dashboard", icon: <FaHome /> },
+  { name: "Pagos", path: "/pagos", icon: <FaCreditCard /> },
+  { name: "Idiomas", path: "/idiomas", icon: <FaGlobe /> },
+  { name: "Servicios Escolares", path: "/servicios", icon: <FaUniversity /> },
+  { name: "Jefatura", path: "/jefatura", icon: <FaChalkboardTeacher /> }, // ← NUEVO
+  { name: "Mi Perfil", path: "/perfil", icon: <FaUser /> },
+  { name: "Cerrar Sesión", path: "/cerrar-sesion", icon: <FaSignOutAlt /> },
+];
 
   return (
     <aside className="w-64 bg-blue-900 text-white flex flex-col h-screen shadow-lg">

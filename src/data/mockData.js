@@ -1,3 +1,5 @@
+import { ESTADOS_SOLICITUD } from '../utils/constants';
+
 export const estudiante = {
   id: '1',
   nombre: 'Juan Pérez García',
@@ -102,6 +104,7 @@ export const librosEjemplo = [
   },
 ];
 
+// Actualiza extraordinariosEjemplo
 export const extraordinariosEjemplo = [
   {
     id: '1',
@@ -110,7 +113,7 @@ export const extraordinariosEjemplo = [
     fecha: '2025-11-15',
     hora: '10:00',
     costo: 600,
-    estado: 'disponible',
+    estado: ESTADOS_SOLICITUD.PENDIENTE, // Cambiar aquí
   },
   {
     id: '2',
@@ -119,6 +122,33 @@ export const extraordinariosEjemplo = [
     fecha: '2025-11-20',
     hora: '14:00',
     costo: 600,
-    estado: 'disponible',
+    estado: ESTADOS_SOLICITUD.PENDIENTE, // Cambiar aquí
+  },
+  {
+    id: '3',
+    materia: 'Ecuaciones Diferenciales',
+    profesor: 'Mtro. Héctor Bravo',
+    fecha: '2025-11-20',
+    hora: '16:00',
+    costo: 600,
+    estado: ESTADOS_SOLICITUD.EN_PROCESO, // Cambiar aquí
+  },
+  {
+    id: '4',
+    materia: 'Bases de Datos Avanzadas',
+    profesor: 'Dr. Roberto Martínez',
+    fecha: '2025-11-25',
+    hora: '09:00',
+    costo: 600,
+    estado: ESTADOS_SOLICITUD.APROBADO, // Cambiar aquí
+  },
+  {
+    id: '5',
+    materia: 'Sistemas Operativos',
+    profesor: 'Ing. Laura Sánchez',
+    fecha: '2025-11-25',
+    hora: '11:00',
+    costo: 600,
+    estado: ESTADOS_SOLICITUD.COMPLETADO, // Cambiar aquí
   },
 ];
