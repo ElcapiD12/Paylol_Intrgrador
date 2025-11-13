@@ -1,9 +1,10 @@
 import React from "react";
+import clsx from "clsx";
 
-export function Card({ title, children }) {
+export function Card({ title, children, className = "", shadow = "md" }) {
   return (
-    <div className="bg-white shadow-md rounded-2xl p-6">
-      <h3 className="text-xl font-semibold mb-3 text-gray-700">{title}</h3>
+    <div className={clsx(`bg-white shadow-${shadow} rounded-2xl p-6`, className)}>
+      {title && <h3 className="text-xl font-semibold mb-3 text-gray-700">{title}</h3>}
       {children}
     </div>
   );

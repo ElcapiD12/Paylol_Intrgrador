@@ -1,51 +1,69 @@
-export function Input({ 
-  label, 
-  error, 
+export function Input({
+  label,
+  error,
   helperText,
   icon,
-  type = 'text',
+  type = "text",
   required = false,
-  className = '',
-  ...props 
+  disabled = false,
+  readOnly = false,
+  className = "",
+  id,
+  ...props
 }) {
+  const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  const helperId = helperText ? `${inputId}-helper` : null;
+  const errorId = error ? `${inputId}-error` : null;
+
   return (
     <div className="mb-4">
       {label && (
-        <label className="block text-gray-700 text-sm font-medium mb-2">
+        <label htmlFor={inputId} className="block text-gray-700 text-sm font-medium mb-2">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      
+
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <div
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            aria-hidden="true"
+          >
             {icon}
           </div>
         )}
-        
+
         <input
+          id={inputId}
           type={type}
+          disabled={disabled}
+          readOnly={readOnly}
+          aria-invalid={!!error}
+          aria-describedby={error ? errorId : helperId}
           className={`
             w-full px-4 py-2 border rounded-lg 
             focus:outline-none focus:ring-2 focus:ring-blue-500
             transition-all duration-200
-            ${icon ? 'pl-10' : ''}
-            ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}
+            ${icon ? "pl-10" : ""}
+            ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300"}
+            ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}
             ${className}
           `}
           {...props}
         />
       </div>
-      
+
       {error && (
-        <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
-          <span>⚠️</span> {error}
+        <p id={errorId} className="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <span aria-hidden="true">⚠️</span> {error}
         </p>
       )}
-      
+
       {helperText && !error && (
-        <p className="text-gray-500 text-sm mt-1">{helperText}</p>
+        <p id={helperId} className="text-gray-500 text-sm mt-1">
+          {helperText}
+        </p>
       )}
     </div>
   );

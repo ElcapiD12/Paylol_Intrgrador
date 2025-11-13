@@ -12,6 +12,8 @@ import LogoutPage from "./pages/LogoutPage";
 import NotFound from './pages/NotFound';
 import './index.css';
 import JefaturaPage from "./pages/JefaturaPage";
+import './assets/styles/theme.css';
+
 
 function App() {
   return (
