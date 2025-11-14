@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export default function Card({  
   children, 
   title, 
@@ -12,18 +13,15 @@ export default function Card({
     normal: 'p-6',
     lg: 'p-8',
   };
+=======
+import React from "react";
+import clsx from "clsx";
+>>>>>>> 6bc151f9904fa51efc93817bde6d3f0daa0efb64
 
+export function Card({ title, children, className = "", shadow = "md" }) {
   return (
-    <div 
-      className={`bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow ${paddings[padding]} ${className}`}
-      {...props}
-    >
-      {title && (
-        <div className="mb-4 border-b pb-4">
-          <h3 className="text-xl font-semibold text-gray-800">{title}</h3>
-          {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
-        </div>
-      )}
+    <div className={clsx(`bg-white shadow-${shadow} rounded-2xl p-6`, className)}>
+      {title && <h3 className="text-xl font-semibold mb-3 text-gray-700">{title}</h3>}
       {children}
     </div>
   );

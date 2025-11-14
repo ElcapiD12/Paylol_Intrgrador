@@ -1,3 +1,5 @@
+import { ESTADOS_SOLICITUD } from '../utils/constants';
+
 export const estudiante = {
   id: '1',
   nombre: 'Juan Pérez García',
@@ -38,41 +40,71 @@ export const pagosEjemplo = [
   },
 ];
 
+// ACTUALIZADO: Solicitudes con todos los campos necesarios
 export const solicitudesEjemplo = [
   {
-    id: '1',
+    id: 1,
+    folio: 'CONST-2024-001234',
     tipo: 'Constancia de Estudios',
-    estado: 'en_proceso',
-    fechaSolicitud: '2025-10-20',
-    monto: 150,
+    motivo: 'Trámite de beca universitaria',
+    dirigidoA: 'CONACYT',
+    costo: 150,
+    estado: 'pendiente',
+    fecha: '2025-10-20T10:00:00.000Z',
+    estudiante: 'Juan Pérez García'
   },
   {
-    id: '2',
-    tipo: 'Constancia de Calificaciones',
-    estado: 'completado',
-    fechaSolicitud: '2025-09-15',
-    fechaEntrega: '2025-09-20',
-    monto: 150,
+    id: 2,
+    folio: 'CONST-2024-001235',
+    tipo: 'Constancia con Calificaciones',
+    motivo: 'Solicitud de empleo',
+    dirigidoA: 'Empresa Tech Solutions',
+    costo: 150,
+    estado: 'aprobado',
+    fecha: '2025-10-15T14:30:00.000Z',
+    estudiante: 'María García López'
   },
+  {
+    id: 3,
+    folio: 'CONST-2024-001236',
+    tipo: 'Carta de Buena Conducta',
+    motivo: 'Trámite de visa',
+    dirigidoA: 'Embajada de Estados Unidos',
+    costo: 150,
+    estado: 'rechazado',
+    fecha: '2025-10-10T09:15:00.000Z',
+    estudiante: 'Pedro Ramírez'
+  }
 ];
 
 export const librosEjemplo = [
   {
     id: '1',
     titulo: 'English File Intermediate',
-    nivel: 'intermedio',
+    nivel: 'Intermedio',
     precio: 800,
     isbn: '978-0194035507',
+    descripcion: 'Libro completo para nivel intermedio con ejercicios prácticos',
   },
   {
     id: '2',
     titulo: 'Oxford Advanced Learner',
-    nivel: 'avanzado',
+    nivel: 'Avanzado',
     precio: 1200,
     isbn: '978-0194798792',
+    descripcion: 'Diccionario y libro de aprendizaje para nivel avanzado',
+  },
+  {
+    id: '3',
+    titulo: 'English File Elementary',
+    nivel: 'Básico',
+    precio: 750,
+    isbn: '978-0194598552',
+    descripcion: 'Perfecto para comenzar a aprender inglés desde cero',
   },
 ];
 
+// Actualiza extraordinariosEjemplo
 export const extraordinariosEjemplo = [
   {
     id: '1',
@@ -81,7 +113,7 @@ export const extraordinariosEjemplo = [
     fecha: '2025-11-15',
     hora: '10:00',
     costo: 600,
-    estado: 'disponible',
+    estado: ESTADOS_SOLICITUD.PENDIENTE, // Cambiar aquí
   },
   {
     id: '2',
@@ -90,6 +122,33 @@ export const extraordinariosEjemplo = [
     fecha: '2025-11-20',
     hora: '14:00',
     costo: 600,
-    estado: 'disponible',
+    estado: ESTADOS_SOLICITUD.PENDIENTE, // Cambiar aquí
+  },
+  {
+    id: '3',
+    materia: 'Ecuaciones Diferenciales',
+    profesor: 'Mtro. Héctor Bravo',
+    fecha: '2025-11-20',
+    hora: '16:00',
+    costo: 600,
+    estado: ESTADOS_SOLICITUD.EN_PROCESO, // Cambiar aquí
+  },
+  {
+    id: '4',
+    materia: 'Bases de Datos Avanzadas',
+    profesor: 'Dr. Roberto Martínez',
+    fecha: '2025-11-25',
+    hora: '09:00',
+    costo: 600,
+    estado: ESTADOS_SOLICITUD.APROBADO, // Cambiar aquí
+  },
+  {
+    id: '5',
+    materia: 'Sistemas Operativos',
+    profesor: 'Ing. Laura Sánchez',
+    fecha: '2025-11-25',
+    hora: '11:00',
+    costo: 600,
+    estado: ESTADOS_SOLICITUD.COMPLETADO, // Cambiar aquí
   },
 ];

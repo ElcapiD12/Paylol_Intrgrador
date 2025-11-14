@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export default function EmptyState({ 
   icon = '📭',
   title = 'No hay datos',
@@ -5,14 +6,16 @@ export default function EmptyState({
   action,
   actionText,
 }) {
+=======
+import React from "react";
+
+export function EmptyState({ message = "No hay datos para mostrar", icon, action }) {
+>>>>>>> 6bc151f9904fa51efc93817bde6d3f0daa0efb64
   return (
-    <div className="text-center py-12">
-      <div className="text-6xl mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold text-gray-800 mb-2">{title}</h3>
-      <p className="text-gray-500 mb-6">{message}</p>
-      {action && actionText && (
-        <Button onClick={action}>{actionText}</Button>
-      )}
+    <div className="text-center text-gray-500 p-10 border-2 border-dashed rounded-lg" role="status">
+      {icon && <div className="mb-4 text-4xl text-blue-400" aria-hidden="true">{icon}</div>}
+      <p className="mb-4">{message}</p>
+      {action && <div>{action}</div>}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export default function Button({ 
   children, 
   variant = 'primary', 
@@ -16,11 +17,26 @@ export default function Button({
     warning: 'bg-yellow-500 hover:bg-yellow-600 text-white',
     outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50',
   };
+=======
+import React from "react";
+import clsx from "clsx";
+>>>>>>> 6bc151f9904fa51efc93817bde6d3f0daa0efb64
 
-  const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2',
-    lg: 'px-6 py-3 text-lg',
+export function Button({
+  text,
+  onClick,
+  color = "blue",
+  variant = "solid",
+  disabled = false,
+  type = "button",
+  className = "",
+}) {
+  const baseStyles = "font-semibold px-4 py-2 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
+  
+  const variants = {
+    solid: `bg-${color}-600 hover:bg-${color}-700 text-white`,
+    outline: `border border-${color}-600 text-${color}-600 hover:bg-${color}-50`,
+    ghost: `text-${color}-600 hover:bg-${color}-100`,
   };
 
   return (
@@ -28,17 +44,9 @@ export default function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`
-        ${variants[variant]} 
-        ${sizes[size]}
-        rounded-lg font-medium transition-all duration-200
-        disabled:opacity-50 disabled:cursor-not-allowed
-        shadow-sm hover:shadow-md
-        ${className}
-      `}
-      {...props}
+      className={clsx(baseStyles, variants[variant], disabled && "opacity-50 cursor-not-allowed", className)}
     >
-      {children}
+      {text}
     </button>
   );
 }
