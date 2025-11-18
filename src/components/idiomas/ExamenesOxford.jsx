@@ -12,6 +12,11 @@ export default function ExamenesOxford() {
       const saved = localStorage.getItem('historialExamenesOxford');
       return saved ? JSON.parse(saved) : [];
     } catch (error) {
+
+
+
+
+      
       console.error('Error cargando historial:', error);
       return [];
     }
