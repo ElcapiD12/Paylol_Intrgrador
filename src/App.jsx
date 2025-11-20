@@ -1,7 +1,4 @@
-// src/App.jsx
-// ELIMINA: import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// USA ESTO:
-import { Routes, Route } from "react-router-dom"; 
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
@@ -15,43 +12,39 @@ import PerfilPage from "./pages/PerfilPage";
 import LogoutPage from "./pages/LogoutPage";
 import JefaturaPage from "./pages/JefaturaPage";
 import NotFound from './pages/NotFound';
-import './index.css';
 import './assets/styles/theme.css';
 
 function App() {
   return (
-    // ELIMINAR <Router> y </Router>
-    // <Router> 
-      <AuthProvider>
-        <Routes>
-          {/* Rutas públicas */}
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+    <AuthProvider>
+      <Routes>
+        {/* Rutas públicas */}
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-          {/* Rutas protegidas con layout */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<DashboardPage />} />
-            <Route path="pagos" element={<PagosPage />} />
-            <Route path="idiomas" element={<IdiomasPage />} />
-            <Route path="servicios" element={<ServiciosPage />} />
-            <Route path="perfil" element={<PerfilPage />} />
-            <Route path="jefatura" element={<JefaturaPage />} />
-            <Route path="cerrar-sesion" element={<LogoutPage />} />
-          </Route>
+        {/* Rutas protegidas agrupadas bajo /dashboard */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<DashboardPage />} />
+          <Route path="pagos" element={<PagosPage />} />
+          <Route path="idiomas" element={<IdiomasPage />} />
+          <Route path="servicios" element={<ServiciosPage />} />
+          <Route path="perfil" element={<PerfilPage />} />
+          <Route path="jefatura" element={<JefaturaPage />} />
+          <Route path="cerrar-sesion" element={<LogoutPage />} />
+        </Route>
 
-          {/* Ruta 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </AuthProvider>
-    // </Router>
+        {/* Ruta 404 */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 
