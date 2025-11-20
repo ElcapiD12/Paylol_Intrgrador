@@ -1,7 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// src/App.jsx
+// ELIMINA: import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// USA ESTO:
+import { Routes, Route } from "react-router-dom"; 
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import DashboardLayout from "./layouts/DashboardLayout";
 import DashboardPage from "./pages/DashboardPage";
 import PagosPage from "./pages/PagosPage";
@@ -9,33 +13,32 @@ import IdiomasPage from "./pages/IdiomasPage";
 import ServiciosPage from "./pages/ServiciosPage";
 import PerfilPage from "./pages/PerfilPage";
 import LogoutPage from "./pages/LogoutPage";
+import JefaturaPage from "./pages/JefaturaPage";
 import NotFound from './pages/NotFound';
 import './index.css';
-import JefaturaPage from "./pages/JefaturaPage";
 import './assets/styles/theme.css';
-
 
 function App() {
   return (
-    <Router>
+    // ELIMINAR <Router> y </Router>
+    // <Router> 
       <AuthProvider>
         <Routes>
-          {/* Ruta pública - Login */}
+          {/* Rutas públicas */}
           <Route path="/" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-          {/* Rutas protegidas con Layout */}
+          {/* Rutas protegidas con layout */}
           <Route
-            path="/*"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <DashboardLayout />
               </ProtectedRoute>
             }
           >
-            {/* Rutas anidadas dentro del Dashboard */}
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="servicios" element={<ServiciosPage />} />
+            <Route index element={<DashboardPage />} />
             <Route path="pagos" element={<PagosPage />} />
             <Route path="idiomas" element={<IdiomasPage />} />
             <Route path="servicios" element={<ServiciosPage />} />
@@ -48,7 +51,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
-    </Router>
+    // </Router>
   );
 }
 

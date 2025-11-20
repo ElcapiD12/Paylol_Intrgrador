@@ -7,7 +7,7 @@ export const validarLogin = (email, password) => {
   
   if (!email) {
     errores.email = 'El email es requerido';
-  } else if (!validarEmail(email)) {  // ← Aquí usa validarEmail
+  } else if (!validarEmail(email)) {
     errores.email = 'Email inválido';
   }
   
@@ -39,29 +39,39 @@ export const validarPago = (datos) => {
 export const validarRegistro = (datos) => {
   const errores = {};
   
+  // Nombre
   if (!datos.nombre?.trim()) {
     errores.nombre = 'El nombre es requerido';
   }
-  
+
+  // Email
   if (!datos.email) {
     errores.email = 'El email es requerido';
   } else if (!validarEmail(datos.email)) {
     errores.email = 'Email inválido';
   }
-  
+
+  // Matrícula
   if (!datos.matricula) {
     errores.matricula = 'La matrícula es requerida';
   }
-  
+
+  // Cuatrimestre (AQUÍ ESTABA TU ERROR)
+  if (!datos.cuatrimestre) {
+    errores.cuatrimestre = 'El cuatrimestre es requerido';
+  }
+
+  // Contraseña
   if (!datos.password) {
     errores.password = 'La contraseña es requerida';
   } else if (datos.password.length < 6) {
     errores.password = 'La contraseña debe tener al menos 6 caracteres';
   }
-  
+
+  // Confirmación
   if (datos.password !== datos.confirmarPassword) {
     errores.confirmarPassword = 'Las contraseñas no coinciden';
   }
-  
+
   return errores;
 };

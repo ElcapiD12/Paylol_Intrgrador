@@ -1,9 +1,10 @@
-//Página de login
-
-import Login from '../components/auth/Login';
+// src/pages/LoginPage.jsx
+import Login from '../components/auth/Login'; 
 
 function LoginPage() {
-  return <Login />;
+  return (
+    <Login /> 
+  );
 }
 
 export default LoginPage;
