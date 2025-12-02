@@ -13,6 +13,11 @@ import PerfilPage from "./pages/PerfilPage";
 import LogoutPage from "./pages/LogoutPage";
 import JefaturaPage from "./pages/JefaturaPage";
 import NotFound from './pages/NotFound';
+
+// NUEVAS IMPORTACIONES - Constancias
+import ServiciosEscolares from './pages/ServiciosEscolares';
+import AdminConstancias from './pages/AdminConstancias';
+
 import './assets/styles/theme.css';
 
 function App() {
@@ -23,8 +28,6 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
-        {/* RUTA NUEVA PARA RECUPERAR CONTRASEÑA */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Rutas protegidas */}
@@ -43,6 +46,10 @@ function App() {
           <Route path="perfil" element={<PerfilPage />} />
           <Route path="jefatura" element={<JefaturaPage />} />
           <Route path="cerrar-sesion" element={<LogoutPage />} />
+          
+          {/* NUEVAS RUTAS - Sistema de Constancias */}
+          <Route path="servicios-escolares" element={<ServiciosEscolares />} />
+          <Route path="admin-constancias" element={<AdminConstancias />} />
         </Route>
 
         {/* Ruta 404 */}
