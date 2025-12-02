@@ -1,11 +1,23 @@
-import React from "react";
-import clsx from "clsx";
+// src/components/shared/Card.jsx
 
-export function Card({ title, children, className = "", shadow = "md" }) {
-  return (
-    <div className={clsx(`bg-white shadow-${shadow} rounded-2xl p-6`, className)}>
-      {title && <h3 className="text-xl font-semibold mb-3 text-gray-700">{title}</h3>}
-      {children}
-    </div>
-  );
-}
+import React from 'react';
+
+/**
+ * Componente Tarjeta genérico.
+ * @param {string} title - Título de la tarjeta.
+ * @param {React.ReactNode} children - Contenido interno de la tarjeta.
+ */
+const Card = ({ title, children }) => {
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+            {title && (
+                <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+                    {title}
+                </h2>
+            )}
+            {children}
+        </div>
+    );
+};
+
+export default Card;

@@ -1,11 +1,18 @@
-import React from "react";
+// src/components/shared/EmptyState.jsx
 
-export function EmptyState({ message = "No hay datos para mostrar", icon, action }) {
-  return (
-    <div className="text-center text-gray-500 p-10 border-2 border-dashed rounded-lg" role="status">
-      {icon && <div className="mb-4 text-4xl text-blue-400" aria-hidden="true">{icon}</div>}
-      <p className="mb-4">{message}</p>
-      {action && <div>{action}</div>}
-    </div>
-  );
-}
+import React from 'react';
+
+/**
+ * Componente para mostrar un estado vacío (sin datos).
+ * @param {string} message - Mensaje a mostrar.
+ */
+const EmptyState = ({ message = "No se encontraron datos." }) => {
+    return (
+        <div className="flex flex-col items-center justify-center p-10 bg-gray-50 rounded-lg text-center border border-dashed border-gray-300">
+            <span className="text-4xl mb-4 text-gray-400">📄</span>
+            <p className="text-lg font-medium text-gray-700">{message}</p>
+        </div>
+    );
+};
+
+export default EmptyState;
