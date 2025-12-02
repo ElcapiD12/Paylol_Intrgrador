@@ -1,5 +1,6 @@
 export function Input({
   label,
+  labelClassName = "",   // 👈 NUEVO
   error,
   helperText,
   icon,
@@ -18,7 +19,10 @@ export function Input({
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={inputId} className="block text-gray-700 text-sm font-medium mb-2">
+        <label
+          htmlFor={inputId}
+          className={`block text-sm font-medium mb-2 ${labelClassName}`}
+        >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
