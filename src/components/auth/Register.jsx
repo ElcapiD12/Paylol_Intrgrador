@@ -10,6 +10,7 @@ import { registrarUsuario } from '../../services/authService';
 import { crearUsuario } from '../../services/userService';
 import { validarRegistro } from '../../utils/validators';
 
+
 function Register() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -81,6 +82,7 @@ function Register() {
         cuatrimestre: parseInt(formData.cuatrimestre),
         email: formData.email
       });
+        
 
       if (resultadoUser.success) {
         login(resultadoAuth.user);
