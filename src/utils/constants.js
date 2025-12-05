@@ -58,11 +58,12 @@ export const TIPOS_CONSTANCIA = [
 
 // Niveles de idiomas
 export const NIVELES_INGLES = [
-  { value: 'basico', label: 'Básico' },
-  { value: 'intermedio', label: 'Intermedio' },
-  { value: 'avanzado', label: 'Avanzado' },
-  { value: 'profesional', label: 'Profesional' },
+  "Básico",
+  "Intermedio",
+  "Avanzado",
+  "Profesional"
 ];
+
 
 // Roles de usuario
 export const ROLES = {

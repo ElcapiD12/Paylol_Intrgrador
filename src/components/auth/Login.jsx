@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '../shared/Button';
 import { Input } from '../shared/Input';
 import { Card } from '../shared/Card';
-import { Alert } from '../shared/Alert';
+import { Alert } from '../shared';
 import { validarLogin } from '../../utils/validators';
 import { loginUsuario } from '../../services/authService';
 import { useNavigate } from 'react-router-dom'; 
@@ -93,9 +93,9 @@ function Login() {
             variant="primary"
             className="w-full"
             disabled={loading}
-          >
-            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-          </Button>
+            text={loading ? "Iniciando sesión..." : "Iniciar Sesión"}
+          />
+
         </form>
 
         <div className="mt-6 text-center">
