@@ -23,20 +23,25 @@
   /* ----------------------------------------------- */
   /* COLORES PARA DARK MODE INSTITUCIONAL (DE LA IMAGEN) */
   /* ----------------------------------------------- */
-  --background-dark: #121212;      /* Fondo más oscuro y neutro (casi negro) */
-  --card-dark: #1e2533;            /* Tarjeta: Azul muy oscuro */
-  --input-bg: #273040;             /* Fondo de input: Ligeramente más claro que la tarjeta */
+  --background-dark: #121212;
+  --card-dark: #1e2533;
+  --input-bg: #273040;
   
-  --color-accent: #3498db;         /* Nuevo color de ACENTO: Azul brillante */
-  --input-border-focus: #3498db;   /* Borde de enfoque: Azul brillante */
+  --color-accent: #3498db;
+  --input-border-focus: #3498db;
   
-  --text-light: #f0f0f0;           /* Texto principal: Blanco casi puro */
-  --text-secondary: #a0a8b3;       /* Texto secundario (hint): Gris azulado claro */
-  --link-color: #5dade2;           /* Color de los enlaces: Azul cian claro */
-  --button-forgot-bg: #1e2533;     /* Fondo del botón/link ¿Olvidaste?: Igual que la tarjeta */
+  --text-light: #f0f0f0;
+  --text-secondary: #a0a8b3;
+  --link-color: #5dade2;
+  --button-forgot-bg: #1e2533;
 
-  /* NUEVO: Color cian específico para PAY-LOL */
   --pay-lol-cyan: #34e0e0; 
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 a {
@@ -48,11 +53,19 @@ a:hover {
   color: #535bf2;
 }
 
+/* CORREGIDO: Body sin flex para que el dashboard funcione correctamente */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  padding: 0;
   min-width: 320px;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* CORREGIDO: Root container */
+#root {
+  width: 100%;
   min-height: 100vh;
 }
 
@@ -69,8 +82,8 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--card-dark); /* Default button background */
-  color: var(--text-light); /* Default button text color */
+  background-color: var(--card-dark);
+  color: var(--text-light);
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -112,8 +125,15 @@ button:focus-visible {
 }
 
 /* ================================================= */
-/* ESTILOS DEL LOGIN ESPECÍFICOS (AJUSTADOS PARA LA IMAGEN) */
+/* ESTILOS DEL LOGIN ESPECÍFICOS */
 /* ================================================= */
+
+/* Contenedor especial solo para páginas de login/register */
+.login-container {
+  display: flex;
+  place-items: center;
+  min-height: 100vh;
+}
 
 /* 1. Fondo de la Página */
 .original-bg {
@@ -136,7 +156,7 @@ button:focus-visible {
 
 /* 3. Subtítulo PAY-LOL con el color cian */
 .original-subtitle .font-normal {
-  color: var(--pay-lol-cyan) !important; /* CORREGIDO: Ahora PAY-LOL es cian */
+  color: var(--pay-lol-cyan) !important;
   font-weight: bold !important; 
 }
 
@@ -152,14 +172,14 @@ button:focus-visible {
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); 
 }
 
-/* Efecto Borde de Focus con el nuevo color de acento y borde de 2px */
+/* Efecto Borde de Focus */
 .original-input input:focus {
   outline: none !important;
-  border: 2px solid var(--input-border-focus) !important; /* Borde de 2px en azul brillante */
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.5) !important; /* Sombra externa suave en azul */
+  border: 2px solid var(--input-border-focus) !important;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.5) !important;
 }
 
-/* 5. Botón Principal (con el color de acento y texto visible) */
+/* 5. Botón Principal */
 .btn-original-primary {
   background-color: var(--color-accent) !important; 
   border: none !important;
@@ -175,7 +195,7 @@ button:focus-visible {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6); 
 }
 
-/* 6. Enlace "¿Olvidaste tu contraseña?" (con el color de la tarjeta y texto de enlace) */
+/* 6. Enlace "¿Olvidaste tu contraseña?" */
 .btn-original-secondary {
   color: var(--link-color) !important; 
   text-decoration: none !important;
@@ -197,7 +217,7 @@ button:focus-visible {
     font-size: 0.875rem; 
 }
 
-/* 8. Enlace "Regístrate aquí" (texto de enlace) */
+/* 8. Enlace "Regístrate aquí" */
 .btn-original-link-text {
   color: var(--link-color) !important;
   font-weight: bold;
@@ -212,20 +232,19 @@ button:focus-visible {
     text-decoration: underline;
 }
 
-/* ESTILO ESPECÍFICO PARA EL PEQUEÑO TEXTO "US SE" EN LA IMAGEN */
-/* (Se asume que este elemento se agregará manualmente en Login.jsx) */
+/* ESTILO ESPECÍFICO PARA EL PEQUEÑO TEXTO "US SE" */
 .small-text-link {
     color: var(--text-secondary) !important;
-    font-size: 0.75rem !important; /* Más pequeño que el enlace de "¿Olvidaste?" */
+    font-size: 0.75rem !important;
     text-decoration: none !important;
-    background-color: var(--input-bg) !important; /* Fondo del mismo color que los inputs */
+    background-color: var(--input-bg) !important;
     border-radius: 12px !important;
-    padding: 2px 8px !important; /* Pequeño padding */
+    padding: 2px 8px !important;
     margin-left: 10px !important;
     transition: background-color 0.2s ease-in-out;
-    display: inline-block; /* Para que tome el padding */
-    line-height: 1; /* Para que el texto esté centrado en el padding */
+    display: inline-block;
+    line-height: 1;
 }
 .small-text-link:hover {
-    background-color: #3e4a5a !important; /* Ligero hover effect */
+    background-color: #3e4a5a !important;
 }

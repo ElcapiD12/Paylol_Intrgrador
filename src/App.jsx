@@ -3,7 +3,6 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ForgotPassword from './components/auth/ForgotPassword';
 import DashboardLayout from "./layouts/DashboardLayout";
 import DashboardPage from "./pages/DashboardPage";
 import PagosPage from "./pages/PagosPage";
@@ -13,11 +12,6 @@ import PerfilPage from "./pages/PerfilPage";
 import LogoutPage from "./pages/LogoutPage";
 import JefaturaPage from "./pages/JefaturaPage";
 import NotFound from './pages/NotFound';
-
-// NUEVAS IMPORTACIONES - Constancias
-import ServiciosEscolares from './pages/ServiciosEscolares';
-import AdminConstancias from './pages/AdminConstancias';
-
 import './assets/styles/theme.css';
 
 function App() {
@@ -28,9 +22,8 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* Rutas protegidas */}
+        {/* Rutas protegidas agrupadas bajo /dashboard */}
         <Route
           path="/dashboard"
           element={
@@ -46,10 +39,6 @@ function App() {
           <Route path="perfil" element={<PerfilPage />} />
           <Route path="jefatura" element={<JefaturaPage />} />
           <Route path="cerrar-sesion" element={<LogoutPage />} />
-          
-          {/* NUEVAS RUTAS - Sistema de Constancias */}
-          <Route path="servicios-escolares" element={<ServiciosEscolares />} />
-          <Route path="admin-constancias" element={<AdminConstancias />} />
         </Route>
 
         {/* Ruta 404 */}
