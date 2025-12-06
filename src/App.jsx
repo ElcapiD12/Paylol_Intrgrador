@@ -14,6 +14,9 @@ import './index.css';
 import JefaturaPage from "./pages/JefaturaPage";
 import './assets/styles/theme.css';
 
+// Importamos las vistas de Exámenes Oxford
+import ExamenesOxford from "./components/idiomas/ExamenesOxford";
+import AdminExamenesOxford from "./components/idiomas/AdminExamenesOxford";
 
 function App() {
   return (
@@ -38,10 +41,13 @@ function App() {
             <Route path="servicios" element={<ServiciosPage />} />
             <Route path="pagos" element={<PagosPage />} />
             <Route path="idiomas" element={<IdiomasPage />} />
-            <Route path="servicios" element={<ServiciosPage />} />
             <Route path="perfil" element={<PerfilPage />} />
             <Route path="jefatura" element={<JefaturaPage />} />
             <Route path="cerrar-sesion" element={<LogoutPage />} />
+
+            {/* ✅ Nuevas rutas para Exámenes Oxford */}
+            <Route path="idiomas/examenes" element={<ExamenesOxford />} />
+            <Route path="idiomas/admin-examenes" element={<AdminExamenesOxford />} />
           </Route>
 
           {/* Ruta 404 */}

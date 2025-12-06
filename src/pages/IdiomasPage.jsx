@@ -1,11 +1,13 @@
 // src/pages/IdiomasPage.jsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import RegistroLibros from '../components/idiomas/RegistroLibros';
 import ExamenesOxford from '../components/idiomas/ExamenesOxford';
 import Resultados from '../components/idiomas/Resultados';
 
 export default function IdiomasPage() {
   const [activeTab, setActiveTab] = useState('libros');
+  const navigate = useNavigate();
 
   const tabs = [
     { id: 'libros', label: 'Libros', icon: '📚' },
@@ -17,13 +19,23 @@ export default function IdiomasPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Centro de Idiomas
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Compra libros y registra tus exámenes de certificación
-          </p>
+        <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Centro de Idiomas
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Compra libros y registra tus exámenes de certificación
+            </p>
+          </div>
+
+          {/* ✅ Botón para ir a Vista Admin */}
+          <button
+            onClick={() => navigate('/idiomas/admin-examenes')}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+          >
+            Vista Admin
+          </button>
         </div>
       </div>
 
