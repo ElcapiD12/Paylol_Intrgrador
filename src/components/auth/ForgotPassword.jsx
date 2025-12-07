@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Input } from '../shared/Input';
-import { Card } from '../shared/Card';
-import { Alert } from '../shared/Alert';
+import Input  from '../shared/Input';
+import Card  from '../shared/Card';
+import  Alert  from '../shared/Alert';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../../services/firebase';
 import { useNavigate } from 'react-router-dom';

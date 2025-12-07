@@ -1,5 +1,8 @@
-export function Input({
+import React from 'react';
+
+export default function Input({
   label,
+  labelClassName = "",
   error,
   helperText,
   icon,
@@ -18,7 +21,10 @@ export function Input({
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={inputId} className="block text-gray-700 text-sm font-medium mb-2">
+        <label
+          htmlFor={inputId}
+          className={`block text-sm font-medium mb-2 text-gray-700 ${labelClassName}`}
+        >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -43,10 +49,10 @@ export function Input({
           aria-describedby={error ? errorId : helperId}
           className={`
             w-full px-4 py-2 border rounded-lg 
-            focus:outline-none focus:ring-2 focus:ring-blue-500
+            focus:outline-none focus:ring-2 focus:ring-purple-300
             transition-all duration-200
             ${icon ? "pl-10" : ""}
-            ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300"}
+            ${error ? "border-red-300 focus:ring-red-300" : "border-purple-200"}
             ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}
             ${className}
           `}

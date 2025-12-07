@@ -1,68 +1,47 @@
-//Saber si el usuario está logueado
-//Guardar información del usuario
-//Compartir el estado en toda la app
-
-//Este archivo maneja el estado global de autenticación.
+// src/context/AuthContext.jsx
+// Contexto de autenticación con USUARIO DEMO para desarrollo
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../services/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
 
-// 1. CREAR EL CONTEXTO (El tablero de anuncios)
+// 1. CREAR EL CONTEXTO
 const AuthContext = createContext();
 
-// 2. PROVIDER (El que maneja la información)
+// 2. USUARIO DEMO (para pruebas sin Firebase)
+const USUARIO_DEMO = {
+  id: 'demo123',
+  uid: 'demo123',
+  email: 'jefatura@paylol.com',
+  nombre: 'Jefatura Demo',
+  rol: 'jefe_carrera',
+  displayName: 'Jefatura Demo',
+};
+
+// 3. PROVIDER
 export function AuthProvider({ children }) {
-  // Estado: guarda el usuario actual
-  const [usuario, setUsuario] = useState(null);
-  const [cargando, setCargando] = useState(true); // Mientras verifica si hay usuario
+  // Estado: usuario siempre está logueado con el usuario DEMO
+  const [usuario, setUsuario] = useState(USUARIO_DEMO);
+  const [cargando, setCargando] = useState(false); // No hay carga porque ya tenemos usuario
 
-  // 3. EFECTO: Escuchar cambios en Firebase
-  useEffect(() => {
-    // Firebase nos avisa automáticamente si alguien hace login/logout
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Hay usuario logueado
-        setUsuario(user);
-      } else {
-        // No hay usuario
-        setUsuario(null);
-      }
-      setCargando(false); // Ya terminó de verificar
-    });
-
-    // Limpiar al desmontar
-    return unsubscribe;
-  }, []);
-
-  // 4. FUNCIONES que compartimos
+  // 4. FUNCIONES
   const login = (user) => {
-    setUsuario(user);
+    setUsuario(user || USUARIO_DEMO);
   };
 
-  const logout = async () => {
-    await auth.signOut();
-    setUsuario(null);
+  const logout = () => {
+    // En modo DEMO, no cerramos sesión, solo recargamos el usuario demo
+    setUsuario(USUARIO_DEMO);
   };
 
-  // 5. VALORES que compartimos con toda la app
+  // 5. VALORES compartidos
   const value = {
-    usuario,        // El usuario actual
-    login,          // Función para hacer login
-    logout,         // Función para hacer logout
-    cargando,       // ¿Está verificando?
+    usuario,        // Siempre el usuario DEMO
+    user: usuario,  // Alias para compatibilidad
+    login,
+    logout,
+    cargando,
   };
 
-  // 6. Mientras carga, mostramos "Cargando..."
-  if (cargando) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Cargando...</div>
-      </div>
-    );
-  }
-
-  // 7. Envolver toda la app con este contexto
+  // 6. No hay carga, directamente renderizamos
   return (
     <AuthContext.Provider value={value}>
       {children}
@@ -70,7 +49,7 @@ export function AuthProvider({ children }) {
   );
 }
 
-// 8. HOOK personalizado para usar el contexto fácilmente
+// 7. HOOK personalizado
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
@@ -78,3 +57,6 @@ export function useAuth() {
   }
   return context;
 }
+
+// Exportación por defecto para compatibilidad
+export default AuthContext;

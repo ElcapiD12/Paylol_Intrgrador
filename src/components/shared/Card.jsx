@@ -2,22 +2,24 @@
 
 import React from 'react';
 
-/**
- * Componente Tarjeta genérico.
- * @param {string} title - Título de la tarjeta.
- * @param {React.ReactNode} children - Contenido interno de la tarjeta.
- */
-const Card = ({ title, children }) => {
+export default function Card({ title, children, className = "" }) {
     return (
-        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+        <div className={`
+            bg-white p-6 rounded-2xl 
+            shadow-md hover:shadow-lg 
+            border border-purple-100
+            transition-all duration-300
+            ${className}
+        `}>
             {title && (
-                <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
-                    {title}
-                </h2>
+                <div className="mb-4 pb-3 border-b-2 border-purple-100">
+                    <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <span className="w-1 h-6 bg-gradient-to-b from-purple-300 to-pink-300 rounded-full"></span>
+                        {title}
+                    </h2>
+                </div>
             )}
             {children}
         </div>
     );
-};
-
-export default Card;
+}

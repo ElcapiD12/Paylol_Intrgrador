@@ -1,53 +1,38 @@
+// src/components/jefaturas/Autorizaciones.jsx
+
 import React, { useState, useEffect, useMemo } from 'react'; 
-// Importaciones de Shared y Helpers
 import { Card, Button, Table, Badge, Modal, Loader, EmptyState } from '../shared';
-import { formatDateShort } from '../../utils/helpers';
-// Importaciones de Constantes
-import { MONTOS, ESTADOS_SOLICITUD } from '../../utils/constants'; 
-// NO MODIFICAR: Reemplazamos mockData por Servicios y Auth
-// SOLUCIÓN: Agregamos explícitamente la extensión .js al final
-import { obtenerExtraordinarios, actualizarEstadoExtraordinario } from "../../services/jefaturasService.js";import { useAuth } from '../../context/AuthContext'; 
-
-
-// Función auxiliar para determinar el color del Badge
-const getBadgeType = (estado) => {
-    switch (estado) {
-        case ESTADOS_SOLICITUD.SOLICITADO: return 'warning'; // Pendiente de revisión
-        case ESTADOS_SOLICITUD.AUTORIZADO: return 'info';    // Aprobado, Pendiente de Pago
-        case ESTADOS_SOLICITUD.PAGADO: return 'success';     // Pago Confirmado
-        case ESTADOS_SOLICITUD.RECHAZADO: return 'danger';   // Denegado
-        default: return 'secondary';
-    }
-};
+import { formatCurrency, formatDateShort } from '../../utils/helpers';
+import { MONTOS } from '../../utils/constants'; 
+import { obtenerExtraordinarios, actualizarEstadoExtraordinario } from "../../services/jefaturasService.js";
+import { useAuth } from '../../context/AuthContext'; 
+import CalendarioExamenes from './CalendarioExamenes'; 
 
 const Autorizaciones = () => {
-    const { user } = useAuth(); // Usamos el contexto de autenticación
+    const { user } = useAuth();
     const [extraordinarios, setExtraordinarios] = useState([]);
-    const [loading, setLoading] = useState(true); // Estado para Loader
-    const [error, setError] = useState(null); // Estado para manejar errores
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const [seleccionado, setSeleccionado] = useState(null);
     const [mostrarModal, setMostrarModal] = useState(false);
-    const [accion, setAccion] = useState(''); // 'autorizar', 'rechazar' o 'pagar'
-    const [isProcessing, setIsProcessing] = useState(false); // Para el botón de envío
+    const [accion, setAccion] = useState('');
+    const [isProcessing, setIsProcessing] = useState(false);
 
-    // 1. Carga inicial de datos desde el servicio
     const fetchExtraordinarios = async () => {
         setLoading(true);
         try {
-            // Llama al servicio, asumiendo que trae las solicitudes relevantes para Jefatura
             const data = await obtenerExtraordinarios(user?.id); 
             setExtraordinarios(data);
             setError(null);
         } catch (err) {
             console.error("Error al cargar las solicitudes:", err);
-            setError("Error al cargar las solicitudes de extraordinarios. Revise el servicio.");
+            setError("Error al cargar las solicitudes de extraordinarios.");
         } finally {
             setLoading(false);
         }
     };
     
-    // Ejecuta la carga de datos al montar y cuando el estado del usuario cambia
     useEffect(() => {
         if (user) { 
             fetchExtraordinarios();
@@ -57,57 +42,43 @@ const Autorizaciones = () => {
         }
     }, [user]);
     
-    // 2. Filtra solicitudes pendientes de APROBACIÓN ('Solicitado')
     const pendientesAprobacion = useMemo(() => {
-        return extraordinarios.filter(
-            (e) => e.estado === ESTADOS_SOLICITUD.SOLICITADO
-        );
+        return extraordinarios.filter(e => e.estado === 'Solicitado');
     }, [extraordinarios]);
 
-    // 3. Filtra solicitudes AUTORIZADAS pendientes de PAGO (para validación)
     const autorizadasPendientesPago = useMemo(() => {
-        return extraordinarios.filter(
-            (e) => e.estado === ESTADOS_SOLICITUD.AUTORIZADO
-        );
+        return extraordinarios.filter(e => e.estado === 'Autorizado');
     }, [extraordinarios]);
 
-    // Abrir modal para autorizar, rechazar o validar pago
     const abrirModal = (extra, tipo) => {
         setSeleccionado(extra);
         setAccion(tipo);
         setMostrarModal(true);
     };
 
-    // Confirma la acción (llama al servicio)
     const confirmarAccion = async () => {
         if (!seleccionado) return;
 
         setIsProcessing(true);
         
-        // Determina el nuevo estado a enviar al servicio
         let nuevoEstado;
         if (accion === 'autorizar') {
-            nuevoEstado = ESTADOS_SOLICITUD.AUTORIZADO;
+            nuevoEstado = 'Autorizado';
         } else if (accion === 'rechazar') {
-            nuevoEstado = ESTADOS_SOLICITUD.RECHAZADO;
+            nuevoEstado = 'Rechazado';
         } else if (accion === 'pagar') {
-            nuevoEstado = ESTADOS_SOLICITUD.PAGADO;
+            nuevoEstado = 'Pagado';
         } else {
-            nuevoEstado = seleccionado.estado; // No debe suceder
+            return;
         }
 
         try {
-            // Llama al servicio para actualizar el estado en la BD
             await actualizarEstadoExtraordinario(seleccionado.id, nuevoEstado);
-
-            // Recarga los datos desde el servidor para reflejar el cambio en ambas tablas
             await fetchExtraordinarios(); 
-            
             setMostrarModal(false);
         } catch (err) {
             console.error("Error al confirmar acción:", err);
-            // Usar un modal o un mensaje de error compartido
-            alert(`Error al procesar la acción de ${accion}.`); 
+            alert(`❌ Error al procesar la acción de ${accion}.`); 
         } finally {
             setIsProcessing(false);
             setSeleccionado(null); 
@@ -115,124 +86,154 @@ const Autorizaciones = () => {
         }
     };
 
-    // --- Definición de Columnas y Datos ---
-
-    // Columnas para la tabla de Aprobación (PENDIENTES)
     const columnsAprobacion = [
+        { header: 'Estudiante', accessor: 'estudianteNombre' }, 
         { header: 'Materia', accessor: 'materia' },
         { header: 'Profesor', accessor: 'profesor' },
         { header: 'Fecha Examen', accessor: 'fecha' },
+        { header: 'Costo', accessor: 'costo' },
         { header: 'Estado', accessor: 'estado' },
         { header: 'Acciones', accessor: 'acciones' },
     ];
     
-    // Columnas para la tabla de Validación de Pago (AUTORIZADOS)
     const columnsPago = [
+        { header: 'Estudiante', accessor: 'estudianteNombre' },
         { header: 'Materia', accessor: 'materia' },
-        { header: 'Estudiante', accessor: 'estudianteNombre' }, // Propiedad para identificar al estudiante
         { header: 'Fecha Examen', accessor: 'fecha' },
+        { header: 'Costo', accessor: 'costo' },
         { header: 'Estado', accessor: 'estado' },
         { header: 'Validar Pago', accessor: 'validarPago' },
     ];
 
-    // Mapeo de datos para la tabla de Pendientes de Aprobación
     const dataAprobacion = pendientesAprobacion.map((extra) => ({
-        ...extra,
-        // Usamos 'fecha' de mockData como fecha del examen
+        id: extra.id,
+        estudianteNombre: extra.estudianteNombre || 'ID: ' + extra.userId || 'Desconocido',
+        materia: extra.materia,
+        profesor: extra.profesor,
         fecha: formatDateShort(extra.fecha), 
-        estado: <Badge type={getBadgeType(extra.estado)}>{extra.estado}</Badge>,
+        costo: formatCurrency(MONTOS.extraordinario),
+        estado: <Badge estado={extra.estado} />,
         acciones: (
             <div className="flex gap-2">
-                <Button type="success" onClick={() => abrirModal(extra, 'autorizar')}>Autorizar</Button>
-                <Button type="danger" onClick={() => abrirModal(extra, 'rechazar')}>Rechazar</Button>
+                <Button type="success" onClick={() => abrirModal(extra, 'autorizar')}>
+                    ✓ Autorizar
+                </Button>
+                <Button type="danger" onClick={() => abrirModal(extra, 'rechazar')}>
+                    ✕ Rechazar
+                </Button>
             </div>
         ),
     }));
     
-    // Mapeo de datos para la tabla de Pendientes de Pago
     const dataPago = autorizadasPendientesPago.map((extra) => ({
-        ...extra,
-        fecha: formatDateShort(extra.fecha),
-        // Muestra el nombre del estudiante si está disponible, sino usa el ID
+        id: extra.id,
         estudianteNombre: extra.estudianteNombre || 'ID: ' + extra.userId || 'Desconocido', 
-        estado: <Badge type={getBadgeType(extra.estado)}>{extra.estado}</Badge>,
+        materia: extra.materia,
+        fecha: formatDateShort(extra.fecha),
+        costo: formatCurrency(MONTOS.extraordinario),
+        estado: <Badge estado={extra.estado} />,
         validarPago: (
             <Button type="info" onClick={() => abrirModal(extra, 'pagar')}>
-                Validar Pago
+                💳 Validar Pago
             </Button>
         ),
     }));
     
-    // --- Renderizado de UI ---
-    
     if (loading) return <Loader />;
     if (error) return <EmptyState message={error} />;
 
-
     const modalTitle = 
-        accion === 'autorizar' ? 'Confirmar Autorización' :
-        accion === 'rechazar' ? 'Confirmar Rechazo' :
-        'Validar Pago Realizado';
-        
-    const modalButtonText = 
-        accion === 'autorizar' ? 'Confirmar Autorización' :
-        accion === 'rechazar' ? 'Confirmar Rechazo' :
-        'Confirmar Pago';
+        accion === 'autorizar' ? '✅ Confirmar Autorización' :
+        accion === 'rechazar' ? '❌ Confirmar Rechazo' :
+        '💰 Validar Pago Realizado';
 
     return (
-        <div className="p-4 space-y-8">
-            <h1 className="text-2xl font-bold">🛂 Gestión de Solicitudes y Pagos (Jefatura)</h1>
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6">
+            <div className="max-w-7xl mx-auto space-y-8">
+                
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                        🛂 Gestión de Solicitudes y Pagos
+                    </h1>
+                    <p className="text-gray-600">Panel de control para Jefatura de Carrera</p>
+                </div>
 
-            {/* Sección 1: Autorización de Solicitudes (Estado: SOLICITADO) */}
-            <Card title="Solicitudes Pendientes de Aprobación">
-                <Table 
-                    columns={columnsAprobacion} 
-                    data={dataAprobacion} 
-                    keyAccessor="id"
-                    emptyMessage="🎉 No hay solicitudes pendientes por autorizar."
-                />
-            </Card>
-            
-            {/* Sección 2: Validación de Pago (Estado: AUTORIZADO) */}
-            <Card title="Exámenes Autorizados Pendientes de Validación de Pago">
-                <Table 
-                    columns={columnsPago} 
-                    data={dataPago} 
-                    keyAccessor="id"
-                    emptyMessage="Todos los exámenes autorizados han sido pagados."
-                />
-            </Card>
+                {/* Sección 1: Autorización */}
+                <Card title="⏳ Solicitudes Pendientes de Aprobación">
+                    <Table 
+                        columns={columnsAprobacion} 
+                        data={dataAprobacion} 
+                        keyAccessor="id"
+                        emptyMessage="🎉 No hay solicitudes pendientes por autorizar."
+                    />
+                </Card>
+                
+                {/* Sección 2: Validación de Pago */}
+                <Card title="💳 Exámenes Autorizados Pendientes de Validación de Pago">
+                    <Table 
+                        columns={columnsPago} 
+                        data={dataPago} 
+                        keyAccessor="id"
+                        emptyMessage="✅ Todos los exámenes autorizados han sido pagados."
+                    />
+                </Card>
+                
+                {/* Sección 3: Calendario */}
+                <CalendarioExamenes extraordinarios={extraordinarios} />
+            </div>
 
+            {/* Modal */}
             <Modal
                 isOpen={mostrarModal}
                 title={modalTitle}
                 onClose={() => setMostrarModal(false)}
-                footer={
-                    <>
-                        <Button onClick={() => setMostrarModal(false)} type="secondary" disabled={isProcessing}>Cancelar</Button>
+            >
+                <div className="space-y-4">
+                    <div className={`p-4 rounded-xl border-2 ${
+                        accion === 'autorizar' || accion === 'pagar' 
+                            ? 'bg-emerald-50 border-emerald-200' 
+                            : 'bg-rose-50 border-rose-200'
+                    }`}>
+                        <p className="text-gray-700">
+                            ¿Desea{' '}
+                            <strong className={accion === 'autorizar' || accion === 'pagar' ? 'text-emerald-700' : 'text-rose-700'}>
+                                {accion === 'autorizar' ? 'autorizar' : accion === 'rechazar' ? 'rechazar' : 'confirmar el pago de'}
+                            </strong>{' '}
+                            la solicitud de{' '}
+                            <strong className="text-purple-700">{seleccionado?.materia}</strong> 
+                            {' '}solicitada por <strong className="text-purple-700">{seleccionado?.estudianteNombre || 'el estudiante'}</strong>?
+                        </p>
+                    </div>
+                    
+                    {accion === 'pagar' && (
+                        <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                            <p className="text-sm font-semibold text-blue-800">
+                                📌 Esta acción finaliza la solicitud y programa el examen en el calendario.
+                            </p>
+                        </div>
+                    )}
+                    
+                    <div className="flex gap-3 justify-end mt-6">
                         <Button 
-                            onClick={confirmarAccion} 
-                            type={accion === 'autorizar' || accion === 'pagar' ? 'primary' : 'danger'}
+                            onClick={() => setMostrarModal(false)} 
+                            type="secondary" 
                             disabled={isProcessing}
                         >
-                            {isProcessing ? 'Procesando...' : modalButtonText}
+                            Cancelar
                         </Button>
-                    </>
-                }
-            >
-                <p>
-                    ¿Desea{' '}
-                    <strong className={accion === 'autorizar' || accion === 'pagar' ? 'text-green-600' : 'text-red-600'}>
-                        {accion === 'autorizar' ? 'autorizar' : accion === 'rechazar' ? 'rechazar' : 'confirmar el pago de'}
-                    </strong>{' '}
-                    la solicitud de{' '}
-                    <strong>{seleccionado?.materia}</strong>?
-                    {accion === 'pagar' && (
-                        <p className="mt-2 text-sm font-semibold">
-                            *Esta acción finaliza la solicitud y programa el examen en el calendario.
-                        </p>
-                    )}
-                </p>
+                        <Button 
+                            onClick={confirmarAccion} 
+                            type={accion === 'autorizar' || accion === 'pagar' ? 'success' : 'danger'}
+                            disabled={isProcessing}
+                        >
+                            {isProcessing ? '⏳ Procesando...' : 
+                             accion === 'autorizar' ? '✅ Confirmar Autorización' :
+                             accion === 'rechazar' ? '❌ Confirmar Rechazo' :
+                             '💰 Confirmar Pago'}
+                        </Button>
+                    </div>
+                </div>
             </Modal>
         </div>
     );

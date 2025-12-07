@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // ELIMINADA: import { Button } from '../shared/Button'; // Usaremos <button> nativo
-import { Input } from '../shared/Input';
-import { Card } from '../shared/Card';
-import { Alert } from '../shared/Alert';
-import { Select } from '../shared/Select';
+import  Input  from '../shared/Input';
+import  Card  from '../shared/Card';
+import  Alert  from '../shared/Alert';
+import  Select  from '../shared/Select';
 import { useAuth } from '../../context/AuthContext';
 import { registrarUsuario } from '../../services/authService';
 import { crearUsuario } from '../../services/userService';
