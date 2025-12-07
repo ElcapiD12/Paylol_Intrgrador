@@ -3,7 +3,6 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ForgotPassword from './components/auth/ForgotPassword';
 import DashboardLayout from "./layouts/DashboardLayout";
 import DashboardPage from "./pages/DashboardPage";
 import PagosPage from "./pages/PagosPage";
@@ -24,10 +23,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* RUTA NUEVA PARA RECUPERAR CONTRASEÑA */}
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-
-        {/* Rutas protegidas */}
+        {/* Rutas protegidas agrupadas bajo /dashboard */}
         <Route
           path="/dashboard"
           element={
