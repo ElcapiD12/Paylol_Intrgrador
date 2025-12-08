@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Card, Badge, Button, EmptyState, Table } from '../shared';
+import { Card, Badge, Button, EmptyState } from '../shared';
 import { formatCurrency, formatDate, getEstadoSolicitudColor } from '../../utils/helpers';
 import { collection, onSnapshot, doc, updateDoc, serverTimestamp, orderBy, query } from 'firebase/firestore';
 import { db } from '../../services/firebase';
-import { CheckCircle, XCircle, Clock, FileText, AlertCircle, Eye } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, FileText, AlertCircle, Eye, User, Calendar, DollarSign } from 'lucide-react';
 
 export default function AprobacionAdmin() {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -51,14 +51,14 @@ export default function AprobacionAdmin() {
   };
 
   const handleAprobar = (solicitudId) => {
-    const comentario = prompt('Comentario (opcional):');
+    const comentario = prompt('💬 Comentario (opcional):');
     if (comentario !== null) {
       actualizarEstado(solicitudId, 'en_proceso', comentario || 'Solicitud aprobada y en proceso');
     }
   };
 
   const handleCompletar = (solicitudId) => {
-    const comentario = prompt('Comentario (opcional):');
+    const comentario = prompt('💬 Comentario de finalización (opcional):');
     if (comentario !== null) {
       actualizarEstado(solicitudId, 'completado', comentario || 'Constancia lista para descarga');
     }
@@ -98,235 +98,213 @@ export default function AprobacionAdmin() {
 
   return (
     <div className="space-y-6">
-      {/* Estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card 
-          padding="sm" 
-          className="cursor-pointer hover:bg-gray-50 transition-colors border-2" 
+      {/* Estadísticas Compactas */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <button
           onClick={() => setFiltroEstado('todos')}
+          className={`p-4 rounded-lg border-2 transition-all ${
+            filtroEstado === 'todos' 
+              ? 'border-gray-500 bg-gray-50 shadow-md' 
+              : 'border-gray-200 hover:border-gray-400'
+          }`}
         >
-          <div className="text-center">
-            <p className="text-3xl font-bold text-gray-800">{estadisticas.total}</p>
-            <p className="text-sm text-gray-600 mt-1 font-medium">Total</p>
-          </div>
-        </Card>
+          <p className="text-2xl font-bold text-gray-800">{estadisticas.total}</p>
+          <p className="text-xs text-gray-600 mt-1 font-medium">Total</p>
+        </button>
         
-        <Card 
-          padding="sm" 
-          className="cursor-pointer hover:bg-yellow-50 transition-colors border-2 border-yellow-200" 
+        <button
           onClick={() => setFiltroEstado('pendiente')}
+          className={`p-4 rounded-lg border-2 transition-all ${
+            filtroEstado === 'pendiente' 
+              ? 'border-yellow-500 bg-yellow-50 shadow-md' 
+              : 'border-yellow-200 hover:border-yellow-400'
+          }`}
         >
-          <div className="text-center">
-            <Clock className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
-            <p className="text-3xl font-bold text-yellow-700">{estadisticas.pendientes}</p>
-            <p className="text-sm text-yellow-800 mt-1 font-medium">Pendientes</p>
-          </div>
-        </Card>
+          <p className="text-2xl font-bold text-yellow-700">{estadisticas.pendientes}</p>
+          <p className="text-xs text-yellow-800 mt-1 font-medium">Pendientes</p>
+        </button>
         
-        <Card 
-          padding="sm" 
-          className="cursor-pointer hover:bg-blue-50 transition-colors border-2 border-blue-200" 
+        <button
           onClick={() => setFiltroEstado('en_proceso')}
+          className={`p-4 rounded-lg border-2 transition-all ${
+            filtroEstado === 'en_proceso' 
+              ? 'border-blue-500 bg-blue-50 shadow-md' 
+              : 'border-blue-200 hover:border-blue-400'
+          }`}
         >
-          <div className="text-center">
-            <AlertCircle className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-            <p className="text-3xl font-bold text-blue-700">{estadisticas.enProceso}</p>
-            <p className="text-sm text-blue-800 mt-1 font-medium">En Proceso</p>
-          </div>
-        </Card>
+          <p className="text-2xl font-bold text-blue-700">{estadisticas.enProceso}</p>
+          <p className="text-xs text-blue-800 mt-1 font-medium">En Proceso</p>
+        </button>
         
-        <Card 
-          padding="sm" 
-          className="cursor-pointer hover:bg-green-50 transition-colors border-2 border-green-200" 
+        <button
           onClick={() => setFiltroEstado('completado')}
+          className={`p-4 rounded-lg border-2 transition-all ${
+            filtroEstado === 'completado' 
+              ? 'border-green-500 bg-green-50 shadow-md' 
+              : 'border-green-200 hover:border-green-400'
+          }`}
         >
-          <div className="text-center">
-            <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
-            <p className="text-3xl font-bold text-green-700">{estadisticas.completadas}</p>
-            <p className="text-sm text-green-800 mt-1 font-medium">Completadas</p>
-          </div>
-        </Card>
+          <p className="text-2xl font-bold text-green-700">{estadisticas.completadas}</p>
+          <p className="text-xs text-green-800 mt-1 font-medium">Completadas</p>
+        </button>
         
-        <Card 
-          padding="sm" 
-          className="cursor-pointer hover:bg-red-50 transition-colors border-2 border-red-200" 
+        <button
           onClick={() => setFiltroEstado('rechazado')}
+          className={`p-4 rounded-lg border-2 transition-all ${
+            filtroEstado === 'rechazado' 
+              ? 'border-red-500 bg-red-50 shadow-md' 
+              : 'border-red-200 hover:border-red-400'
+          }`}
         >
-          <div className="text-center">
-            <XCircle className="w-8 h-8 text-red-600 mx-auto mb-2" />
-            <p className="text-3xl font-bold text-red-700">{estadisticas.rechazadas}</p>
-            <p className="text-sm text-red-800 mt-1 font-medium">Rechazadas</p>
-          </div>
-        </Card>
+          <p className="text-2xl font-bold text-red-700">{estadisticas.rechazadas}</p>
+          <p className="text-xs text-red-800 mt-1 font-medium">Rechazadas</p>
+        </button>
       </div>
 
-      {/* Filtros */}
-      <Card padding="sm">
-        <div className="flex items-center gap-3 flex-wrap">
-          <Eye className="w-5 h-5 text-gray-600" />
-          <span className="text-sm font-semibold text-gray-700">Filtrar por estado:</span>
-          {[
-            { value: 'todos', label: 'Todas', color: 'gray' },
-            { value: 'pendiente', label: 'Pendientes', color: 'yellow' },
-            { value: 'en_proceso', label: 'En Proceso', color: 'blue' },
-            { value: 'completado', label: 'Completadas', color: 'green' },
-            { value: 'rechazado', label: 'Rechazadas', color: 'red' }
-          ].map((filtro) => (
-            <button
-              key={filtro.value}
-              onClick={() => setFiltroEstado(filtro.value)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                filtroEstado === filtro.value
-                  ? `bg-${filtro.color}-600 text-white shadow-md`
-                  : `bg-${filtro.color}-100 text-${filtro.color}-700 hover:bg-${filtro.color}-200`
-              }`}
-              style={{
-                backgroundColor: filtroEstado === filtro.value 
-                  ? filtro.color === 'gray' ? '#4B5563' 
-                    : filtro.color === 'yellow' ? '#D97706'
-                    : filtro.color === 'blue' ? '#2563EB'
-                    : filtro.color === 'green' ? '#059669'
-                    : '#DC2626'
-                  : filtro.color === 'gray' ? '#F3F4F6'
-                    : filtro.color === 'yellow' ? '#FEF3C7'
-                    : filtro.color === 'blue' ? '#DBEAFE'
-                    : filtro.color === 'green' ? '#D1FAE5'
-                    : '#FEE2E2',
-                color: filtroEstado === filtro.value ? 'white' : undefined
-              }}
-            >
-              {filtro.label}
-            </button>
-          ))}
+      {/* Tabla de Solicitudes */}
+      <Card>
+        <div className="mb-4 pb-4 border-b border-gray-200">
+          <h2 className="text-xl font-bold text-gray-900">Gestión de Solicitudes</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Mostrando {solicitudesFiltradas.length} de {solicitudes.length} solicitudes
+          </p>
         </div>
-      </Card>
 
-      {/* Lista de Solicitudes */}
-      <Card 
-        title="Gestión de Solicitudes" 
-        subtitle={`Mostrando ${solicitudesFiltradas.length} de ${solicitudes.length} solicitudes`}
-      >
         {solicitudesFiltradas.length === 0 ? (
           <EmptyState 
             message="No hay solicitudes" 
             description={`No hay solicitudes con el filtro: ${filtroEstado}`} 
           />
         ) : (
-          <div className="space-y-4">
-            {solicitudesFiltradas.map((solicitud) => (
-              <div 
-                key={solicitud.id}
-                className="border-2 border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all bg-white"
-              >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  {/* Info Principal */}
-                  <div className="flex-1">
-                    <div className="flex items-start gap-3 mb-3">
-                      <FileText className="w-6 h-6 text-indigo-500 mt-1" />
-                      <div>
-                        <h4 className="font-bold text-lg text-gray-800">
-                          {solicitud.tipoConstanciaLabel}
-                        </h4>
-                        <p className="text-sm text-gray-500 font-mono">
-                          Folio: {solicitud.id.substring(0, 8).toUpperCase()}
-                        </p>
-                      </div>
-                    </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b-2 border-gray-200">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Folio</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Estudiante</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Constancia</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Fecha</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Motivo</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Monto</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase">Estado</th>
+                  <th className="px-4 py-3 text-center text-xs font-bold text-gray-700 uppercase">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {solicitudesFiltradas.map((solicitud) => (
+                  <tr key={solicitud.id} className="hover:bg-gray-50 transition-colors">
+                    {/* Folio */}
+                    <td className="px-4 py-4">
+                      <span className="font-mono text-sm font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">
+                        {solicitud.id.substring(0, 8).toUpperCase()}
+                      </span>
+                    </td>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm bg-gray-50 p-3 rounded-lg">
-                      <div>
-                        <p className="text-gray-500 font-medium">👤 Estudiante:</p>
-                        <p className="text-gray-800 font-semibold">{solicitud.userName}</p>
-                        <p className="text-gray-600 text-xs">{solicitud.userEmail}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-500 font-medium">📅 Fecha:</p>
-                        <p className="text-gray-800">{formatDate(solicitud.fechaSolicitud)}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-500 font-medium">💰 Monto:</p>
-                        <p className="text-green-700 font-bold text-lg">{formatCurrency(solicitud.monto)}</p>
-                      </div>
-                      {solicitud.motivo && solicitud.motivo !== 'Sin motivo especificado' && (
-                        <div className="md:col-span-2">
-                          <p className="text-gray-500 font-medium">📝 Motivo:</p>
-                          <p className="text-gray-700 italic">"{solicitud.motivo}"</p>
+                    {/* Estudiante */}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-gray-400" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{solicitud.userName}</p>
+                          <p className="text-xs text-gray-500">{solicitud.userEmail}</p>
                         </div>
-                      )}
-                    </div>
-
-                    {solicitud.comentarioAdmin && (
-                      <div className="mt-3 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
-                        <p className="text-blue-800 font-semibold text-sm">💬 Comentario Admin:</p>
-                        <p className="text-gray-700 text-sm mt-1">{solicitud.comentarioAdmin}</p>
                       </div>
-                    )}
-                  </div>
+                    </td>
 
-                  {/* Estado y Acciones */}
-                  <div className="flex flex-col items-end gap-3 md:min-w-[200px]">
-                    <Badge 
-                      variant={getEstadoSolicitudColor(solicitud.estado)} 
-                      size="lg"
-                      className="text-sm font-bold px-4 py-2"
-                    >
-                      {solicitud.estado === 'pendiente' && <Clock className="w-4 h-4 mr-1" />}
-                      {solicitud.estado === 'en_proceso' && <AlertCircle className="w-4 h-4 mr-1" />}
-                      {solicitud.estado === 'completado' && <CheckCircle className="w-4 h-4 mr-1" />}
-                      {solicitud.estado === 'rechazado' && <XCircle className="w-4 h-4 mr-1" />}
-                      {solicitud.estado.toUpperCase()}
-                    </Badge>
+                    {/* Constancia */}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-blue-500" />
+                        <span className="text-sm text-gray-700">{solicitud.tipoConstanciaLabel}</span>
+                      </div>
+                    </td>
 
-                    <div className="flex flex-col gap-2 w-full">
-                      {solicitud.estado === 'pendiente' && (
-                        <>
-                          <Button
-                            size="sm"
-                            variant="success"
-                            onClick={() => handleAprobar(solicitud.id)}
+                    {/* Fecha */}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-600">{formatDate(solicitud.fechaSolicitud)}</span>
+                      </div>
+                    </td>
+
+                    {/* Motivo */}
+                    <td className="px-4 py-4 max-w-xs">
+                      <p className="text-sm text-gray-700 truncate" title={solicitud.motivo}>
+                        {solicitud.motivo || 'Sin motivo'}
+                      </p>
+                    </td>
+
+                    {/* Monto */}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-1">
+                        <DollarSign className="w-4 h-4 text-green-600" />
+                        <span className="text-sm font-semibold text-green-700">
+                          {formatCurrency(solicitud.monto)}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Estado */}
+                    <td className="px-4 py-4">
+                      <Badge 
+                        variant={getEstadoSolicitudColor(solicitud.estado)}
+                        className="flex items-center gap-1 w-fit text-xs font-semibold"
+                      >
+                        {solicitud.estado === 'pendiente' && <Clock className="w-3 h-3" />}
+                        {solicitud.estado === 'en_proceso' && <AlertCircle className="w-3 h-3" />}
+                        {solicitud.estado === 'completado' && <CheckCircle className="w-3 h-3" />}
+                        {solicitud.estado === 'rechazado' && <XCircle className="w-3 h-3" />}
+                        {solicitud.estado.replace('_', ' ').toUpperCase()}
+                      </Badge>
+                    </td>
+
+                    {/* Acciones */}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center justify-center gap-2">
+                        {solicitud.estado === 'pendiente' && (
+                          <>
+                            <button
+                              onClick={() => handleAprobar(solicitud.id)}
+                              disabled={procesando === solicitud.id}
+                              className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1"
+                              title="Aprobar"
+                            >
+                              <CheckCircle className="w-3 h-3" />
+                              Aprobar
+                            </button>
+                            <button
+                              onClick={() => handleRechazar(solicitud.id)}
+                              disabled={procesando === solicitud.id}
+                              className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1"
+                              title="Rechazar"
+                            >
+                              <XCircle className="w-3 h-3" />
+                              Rechazar
+                            </button>
+                          </>
+                        )}
+                        
+                        {solicitud.estado === 'en_proceso' && (
+                          <button
+                            onClick={() => handleCompletar(solicitud.id)}
                             disabled={procesando === solicitud.id}
-                            className="w-full font-semibold"
-                            style={{ backgroundColor: '#10B981', borderColor: '#10B981' }}
+                            className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1"
+                            title="Completar"
                           >
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            Aprobar
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            onClick={() => handleRechazar(solicitud.id)}
-                            disabled={procesando === solicitud.id}
-                            className="w-full font-semibold"
-                            style={{ backgroundColor: '#EF4444', borderColor: '#EF4444' }}
-                          >
-                            <XCircle className="w-4 h-4 mr-1" />
-                            Rechazar
-                          </Button>
-                        </>
-                      )}
-                      
-                      {solicitud.estado === 'en_proceso' && (
-                        <Button
-                          size="sm"
-                          variant="primary"
-                          onClick={() => handleCompletar(solicitud.id)}
-                          disabled={procesando === solicitud.id}
-                          className="w-full font-semibold"
-                          style={{ backgroundColor: '#8B5CF6', borderColor: '#8B5CF6' }}
-                        >
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Completar
-                        </Button>
-                      )}
+                            <CheckCircle className="w-3 h-3" />
+                            Completar
+                          </button>
+                        )}
 
-                      {(solicitud.estado === 'completado' || solicitud.estado === 'rechazado') && (
-                        <span className="text-xs text-gray-400 italic text-center">Sin acciones disponibles</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                        {(solicitud.estado === 'completado' || solicitud.estado === 'rechazado') && (
+                          <span className="text-xs text-gray-400 italic">-</span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </Card>

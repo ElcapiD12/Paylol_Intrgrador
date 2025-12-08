@@ -1,8 +1,9 @@
+// services/firebase.js
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore'; // ← QUITA enableIndexedDbPersistence
+import { getStorage } from 'firebase/storage';
 
-// Validación de configuración
 const requiredEnvVars = [
   'VITE_FIREBASE_API_KEY',
   'VITE_FIREBASE_AUTH_DOMAIN',
@@ -30,17 +31,19 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Inicialización
 let app;
 let auth;
 let db;
+let storage;
 
 try {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
+  storage = getStorage(app);
   
-  // Habilitar persistencia offline (opcional pero recomendado)
+  // ❌ COMENTAR O ELIMINAR ESTA SECCIÓN:
+  /*
   if (typeof window !== 'undefined') {
     enableIndexedDbPersistence(db).catch((err) => {
       if (err.code === 'failed-precondition') {
@@ -50,12 +53,14 @@ try {
       }
     });
   }
+  */
   
   console.log('✅ Firebase inicializado correctamente');
+  console.log('✅ Firebase Storage habilitado');
 } catch (error) {
   console.error('❌ Error al inicializar Firebase:', error);
   throw error;
 }
 
-export { auth, db };
+export { auth, db, storage };
 export default app;
