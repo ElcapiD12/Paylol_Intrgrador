@@ -12,6 +12,11 @@ import PerfilPage from "./pages/PerfilPage";
 import LogoutPage from "./pages/LogoutPage";
 import JefaturaPage from "./pages/JefaturaPage";
 import NotFound from './pages/NotFound';
+
+// ✅ Importa los componentes de Idiomas
+import ExamenesOxford from "./components/idiomas/ExamenesOxford";
+import AdminExamenesOxford from "./components/idiomas/AdminExamenesOxford";
+
 import './assets/styles/theme.css';
 
 function App() {
@@ -34,7 +39,12 @@ function App() {
         >
           <Route index element={<DashboardPage />} />
           <Route path="pagos" element={<PagosPage />} />
+
+          {/* ✅ Rutas de Idiomas */}
           <Route path="idiomas" element={<IdiomasPage />} />
+          <Route path="idiomas/examenes" element={<ExamenesOxford />} />
+          <Route path="idiomas/admin-examenes" element={<AdminExamenesOxford />} />
+
           <Route path="servicios" element={<ServiciosPage />} />
           <Route path="perfil" element={<PerfilPage />} />
           <Route path="jefatura" element={<JefaturaPage />} />
