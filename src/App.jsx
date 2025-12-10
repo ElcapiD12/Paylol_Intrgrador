@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPassword from './components/auth/ForgotPassword';
 import DashboardLayout from "./layouts/DashboardLayout";
 import DashboardPage from "./pages/DashboardPage";
 import PagosPage from "./pages/PagosPage";
@@ -13,9 +14,9 @@ import LogoutPage from "./pages/LogoutPage";
 import JefaturaPage from "./pages/JefaturaPage";
 import NotFound from './pages/NotFound';
 
-// ✅ Importa los componentes de Idiomas
-import ExamenesOxford from "./components/idiomas/ExamenesOxford";
-import AdminExamenesOxford from "./components/idiomas/AdminExamenesOxford";
+// NUEVAS IMPORTACIONES - Constancias
+import ServiciosEscolares from './pages/ServiciosEscolares';
+import AdminConstancias from './pages/AdminConstancias';
 
 import './assets/styles/theme.css';
 
@@ -27,8 +28,9 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* Rutas protegidas agrupadas bajo /dashboard */}
+        {/* Rutas protegidas */}
         <Route
           path="/dashboard"
           element={
@@ -39,16 +41,15 @@ function App() {
         >
           <Route index element={<DashboardPage />} />
           <Route path="pagos" element={<PagosPage />} />
-
-          {/* ✅ Rutas de Idiomas */}
           <Route path="idiomas" element={<IdiomasPage />} />
-          <Route path="idiomas/examenes" element={<ExamenesOxford />} />
-          <Route path="idiomas/admin-examenes" element={<AdminExamenesOxford />} />
-
           <Route path="servicios" element={<ServiciosPage />} />
           <Route path="perfil" element={<PerfilPage />} />
           <Route path="jefatura" element={<JefaturaPage />} />
           <Route path="cerrar-sesion" element={<LogoutPage />} />
+          
+          {/* NUEVAS RUTAS - Sistema de Constancias */}
+          <Route path="servicios-escolares" element={<ServiciosEscolares />} />
+          <Route path="admin-constancias" element={<AdminConstancias />} />
         </Route>
 
         {/* Ruta 404 */}

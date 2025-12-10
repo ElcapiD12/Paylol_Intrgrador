@@ -31,13 +31,7 @@ export const MONTOS = {
   [TIPOS_PAGO.REMEDIAL]: 400,
 };
 
-// Estados de pago
-export const ESTADOS_PAGO = {
-  PENDIENTE: 'pendiente',
-  PAGADO: 'pagado',
-  VENCIDO: 'vencido',
-  PROCESANDO: 'procesando',
-};
+
 
 // Estados de solicitudes
 export const ESTADOS_SOLICITUD = {
@@ -99,4 +93,22 @@ export const ESTADOS_EXTRAORDINARIO = {
   AUTORIZADO: 'Autorizado',
   RECHAZADO: 'Rechazado',
   PAGADO: 'Pagado',
+};
+// AGREGAR AL FINAL DE utils/constants.js
+
+// Información bancaria de la institución
+export const DATOS_BANCARIOS = {
+  banco: 'BBVA Bancomer',
+  titular: 'Instituto Educativo PAYLOL',
+  cuenta: '0123456789',
+  clabe: '012180001234567890',
+  concepto: 'PAGO DE CONSTANCIA',
+};
+export const ESTADOS_PAGO = {
+  PENDIENTE_PAGO: 'pendiente_pago',
+  COMPROBANTE_SUBIDO: 'comprobante_subido',
+  VALIDANDO: 'validando',
+  PAGADO: 'pagado',
+  RECHAZADO: 'rechazado',
+  VENCIDO: 'vencido',
 };
