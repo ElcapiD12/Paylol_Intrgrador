@@ -1,80 +1,109 @@
 // src/components/jefaturas/CalendarioExamenes.jsx
 
-import React, { useState, useMemo } from 'react';
-import { Card, Badge } from '../shared';
+import React, { useMemo } from 'react';
+import { Card, Badge, EmptyState } from '../shared';
 import { formatDate } from '../../utils/helpers';
-import { extraordinariosEjemplo } from '../../data/mockData';
-import { MONTOS, ESTADOS_EXTRAORDINARIO, ESTADOS_SOLICITUD } from '../../utils/constants';
 
-// Función auxiliar (misma para consistencia visual)
-const getBadgeType = (estado) => {
-    switch (estado) {
-        case ESTADOS_SOLICITUD.SOLICITADO: return 'warning'; 
-        case ESTADOS_SOLICITUD.PAGADO:
-        case ESTADOS_SOLICITUD.AUTORIZADO: return 'info'; 
-        default: return 'secondary';
-    }
-};
-
-
-const CalendarioExamenes = () => {
-    const [extraordinarios] = useState(extraordinariosEjemplo);
-
-    // Filtra solo los exámenes que están confirmados y deben ir en el calendario oficial
+const CalendarioExamenes = ({ extraordinarios }) => { 
+    
     const examenesProgramados = useMemo(() => {
+        if (!extraordinarios) return [];
+
         return extraordinarios.filter(e => 
-            e.estado === ESTADOS_SOLICITUD.PAGADO || 
-            e.estado === ESTADOS_SOLICITUD.AUTORIZADO
-        );
+            e.estado === 'Pagado' || e.estado === 'Autorizado'
+        ).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
     }, [extraordinarios]);
 
-    // Agrupa fechas únicas de los exámenes programados
     const fechasUnicas = useMemo(() => {
         return [
             ...new Set(examenesProgramados.map((e) => e.fecha)),
-        ].sort(); // Las fechas en formato YYYY-MM-DD se ordenan correctamente alfabéticamente
+        ].sort();
     }, [examenesProgramados]);
 
+    if (examenesProgramados.length === 0) {
+         return (
+             <Card title="📅 Calendario Visual de Exámenes">
+                <EmptyState message="No hay exámenes programados en el calendario." />
+             </Card>
+         );
+     }
 
     return (
-        <div className="p-4 space-y-4">
-            <h1 className="text-2xl font-bold">📅 Calendario de Exámenes Extraordinarios</h1>
-
-            {fechasUnicas.length === 0 ? (
-                <Card>
-                    <p className="text-gray-500">No hay exámenes autorizados o pagados programados en el calendario.</p>
-                </Card>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {fechasUnicas.map((fecha) => {
-                        const delDia = examenesProgramados.filter((e) => e.fecha === fecha);
-                        
-                        return (
-                            // La Card envuelve todos los exámenes de una fecha
-                            <Card key={fecha} title={formatDate(fecha)}> 
-                                <ul className="space-y-3">
-                                    {delDia.map((examen) => (
-                                        <li
-                                            key={examen.id}
-                                            className="flex justify-between items-start border-b border-gray-100 pb-2"
-                                        >
-                                            <div>
-                                                <p className="font-medium">{examen.materia}</p>
-                                                <small className="text-gray-600">Profesor: {examen.profesor}</small>
-                                            </div>
+        <Card title="📅 Calendario Visual de Exámenes">
+            <p className="mb-6 text-sm text-gray-600 bg-purple-50 p-3 rounded-lg border border-purple-200">
+                 ✨ Exámenes programados (Autorizados y Pagados)
+            </p>
+            
+            <div className="space-y-6">
+                {fechasUnicas.map((fecha, index) => {
+                    const delDia = examenesProgramados.filter((e) => e.fecha === fecha);
+                    
+                    // Colores alternados para cada fecha
+                    const colores = [
+                        'from-blue-100 to-purple-100 border-blue-300',
+                        'from-pink-100 to-rose-100 border-pink-300',
+                        'from-emerald-100 to-teal-100 border-emerald-300',
+                        'from-amber-100 to-yellow-100 border-amber-300',
+                    ];
+                    const colorIndex = index % colores.length;
+                    
+                    return (
+                        <div 
+                            key={fecha} 
+                            className={`
+                                bg-gradient-to-r ${colores[colorIndex]}
+                                p-5 rounded-2xl shadow-md border-l-4
+                                transition-all duration-300 hover:shadow-lg
+                            `}
+                        > 
+                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <span className="text-2xl">📆</span>
+                                {formatDate(fecha)}
+                            </h3>
+                            
+                            <ul className="space-y-3">
+                                {delDia.map((examen) => (
+                                    <li
+                                        key={examen.id}
+                                        className="
+                                            bg-white/80 backdrop-blur-sm
+                                            p-4 rounded-xl 
+                                            flex justify-between items-start
+                                            border border-gray-200
+                                            transition-all duration-300 hover:bg-white hover:shadow-md
+                                        "
+                                    >
+                                        <div className="flex-1">
+                                            <p className="font-semibold text-gray-800 mb-1 flex items-center gap-2">
+                                                <span className="text-purple-600">📚</span>
+                                                {examen.materia}
+                                            </p>
                                             
-                                            <Badge type={getBadgeType(examen.estado)}>
-                                                {examen.estado}
-                                            </Badge>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </Card>
-                        );
-                    })}
-                </div>
-            )}
-        </div>
+                                            <div className="space-y-1 text-sm text-gray-600">
+                                                <p className="flex items-center gap-2">
+                                                    <span>🕐</span>
+                                                    <strong>Hora:</strong> {examen.hora}
+                                                </p>
+                                                <p className="flex items-center gap-2">
+                                                    <span>👨‍🏫</span>
+                                                    <strong>Profesor:</strong> {examen.profesor}
+                                                </p>
+                                                <p className="flex items-center gap-2">
+                                                    <span>🎓</span>
+                                                    <strong>Alumno:</strong> {examen.estudianteNombre || 'Desconocido'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <Badge estado={examen.estado === 'Pagado' ? 'Pagado' : 'Autorizado'} />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    );
+                })}
+            </div>
+        </Card>
     );
 };
 

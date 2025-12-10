@@ -1,15 +1,25 @@
-export function Table({ columns, data, onRowClick, children }) {
+// src/components/shared/Table.jsx
+
+import React from 'react';
+
+export default function Table({ 
+  columns, 
+  data, 
+  onRowClick, 
+  keyAccessor = 'id',
+  emptyMessage = 'No hay datos disponibles.',
+  children 
+}) {
+  // Si se pasan columns y data, renderizar tabla automática
   if (columns && data) {
     return (
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg" role="table">
+        <table className="min-w-full bg-white border border-gray-200 rounded-lg">
           <thead className="bg-gray-50">
-            <tr role="row">
+            <tr>
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  role="columnheader"
-                  scope="col"
                   className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide"
                 >
                   {column.header}
@@ -21,16 +31,14 @@ export function Table({ columns, data, onRowClick, children }) {
             {data.length > 0 ? (
               data.map((row, rowIndex) => (
                 <tr
-                  key={rowIndex}
-                  role="row"
+                  key={row[keyAccessor] || rowIndex}
                   onClick={() => onRowClick?.(row)}
                   className={onRowClick ? "cursor-pointer hover:bg-gray-50 transition" : ""}
                 >
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
-                      role="cell"
-                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-800"
+                      className="px-6 py-4 text-sm text-gray-800"
                     >
                       {column.render ? column.render(row) : row[column.accessor]}
                     </td>
@@ -40,7 +48,7 @@ export function Table({ columns, data, onRowClick, children }) {
             ) : (
               <tr>
                 <td colSpan={columns.length} className="text-center py-6 text-gray-500 text-sm">
-                  No hay datos disponibles.
+                  {emptyMessage}
                 </td>
               </tr>
             )}
@@ -50,10 +58,10 @@ export function Table({ columns, data, onRowClick, children }) {
     );
   }
 
-  // Wrapper manual
+  // Si se pasa children, renderizar tabla manual
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg" role="table">
+      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
         {children}
       </table>
     </div>

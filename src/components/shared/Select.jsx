@@ -1,10 +1,11 @@
-export function Select({
+import React from 'react';
+
+export default function Select({
   label,
   error,
   options = [],
   required = false,
   disabled = false,
-  readOnly = false,
   className = '',
   id,
   placeholder = 'Seleccione una opción',
@@ -29,9 +30,9 @@ export function Select({
         aria-describedby={errorId}
         className={`
           w-full px-4 py-2 border rounded-lg bg-white
-          focus:outline-none focus:ring-2 focus:ring-blue-500
+          focus:outline-none focus:ring-2 focus:ring-purple-300
           transition-all duration-200
-          ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}
+          ${error ? 'border-red-300 focus:ring-red-300' : 'border-purple-200'}
           ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
           ${className}
         `}

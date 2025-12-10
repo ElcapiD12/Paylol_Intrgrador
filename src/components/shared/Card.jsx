@@ -1,11 +1,25 @@
-import React from "react";
-import clsx from "clsx";
+// src/components/shared/Card.jsx
 
-export function Card({ title, children, className = "", shadow = "md" }) {
-  return (
-    <div className={clsx(`bg-white shadow-${shadow} rounded-2xl p-6`, className)}>
-      {title && <h3 className="text-xl font-semibold mb-3 text-gray-700">{title}</h3>}
-      {children}
-    </div>
-  );
+import React from 'react';
+
+export default function Card({ title, children, className = "" }) {
+    return (
+        <div className={`
+            bg-white p-6 rounded-2xl 
+            shadow-md hover:shadow-lg 
+            border border-purple-100
+            transition-all duration-300
+            ${className}
+        `}>
+            {title && (
+                <div className="mb-4 pb-3 border-b-2 border-purple-100">
+                    <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <span className="w-1 h-6 bg-gradient-to-b from-purple-300 to-pink-300 rounded-full"></span>
+                        {title}
+                    </h2>
+                </div>
+            )}
+            {children}
+        </div>
+    );
 }
