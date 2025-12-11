@@ -7,6 +7,7 @@ import ForgotPassword from './components/auth/ForgotPassword';
 import DashboardLayout from "./layouts/DashboardLayout";
 import DashboardPage from "./pages/DashboardPage";
 import PagosPage from "./pages/PagosPage";
+import PagosAdminPage from "./pages/PagosAdminPage"; // NUEVA
 import IdiomasPage from "./pages/IdiomasPage";
 import ServiciosPage from "./pages/ServiciosPage";
 import PerfilPage from "./pages/PerfilPage";
@@ -23,11 +24,9 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
-        {/* RUTA NUEVA PARA RECUPERAR CONTRASEÑA */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* Rutas protegidas */}
+        {/* Rutas protegidas - ALUMNO */}
         <Route
           path="/dashboard"
           element={
@@ -43,6 +42,19 @@ function App() {
           <Route path="perfil" element={<PerfilPage />} />
           <Route path="jefatura" element={<JefaturaPage />} />
           <Route path="cerrar-sesion" element={<LogoutPage />} />
+        </Route>
+
+        {/* Rutas protegidas - ADMIN */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="pagos" element={<PagosAdminPage />} />
+          {/* Puedes añadir más rutas de admin aquí */}
         </Route>
 
         {/* Ruta 404 */}
