@@ -31,12 +31,11 @@ export default function IdiomasPage() {
 
           {/* ✅ Botón para ir a Vista Admin */}
           <button
-           onClick={() => navigate('/dashboard/idiomas/admin-examenes')}
+            onClick={() => navigate('/dashboard/admin-idiomas')}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
->
-         Vista Admin
+          >
+            Vista Admin
           </button>
-
         </div>
       </div>
 

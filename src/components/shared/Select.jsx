@@ -1,33 +1,58 @@
-import React from 'react';
-
-export default function Select({
-  label,
-  error,
-  options = [],
+// src/components/shared/Select.jsx
+function Select({ 
+  label, 
+  value, 
+  options = [], 
+  onChange, 
+  error, 
+  name,
   required = false,
-  disabled = false,
-  className = '',
-  id,
-  placeholder = 'Seleccione una opción',
-  ...props
+  disabled = false,  // ✅ Cambiado de isDisabled a disabled
+  className = "",
+  ...props 
 }) {
-  const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
-  const errorId = error ? `${selectId}-error` : null;
+  
+  // 🔍 DEBUG (puedes quitarlo después)
+  console.log("🎯 Select render:", {
+    name,
+    value,
+    valueType: typeof value,
+    optionsCount: options.length
+  });
+
+  const handleChange = (e) => {
+    const selectedValue = e.target.value;
+    console.log("📝 Select onChange:", {
+      name,
+      selectedValue,
+      selectedValueType: typeof selectedValue
+    });
+    
+    // Buscar el objeto completo de la opción seleccionada
+    const selectedOption = options.find(opt => opt.value === selectedValue);
+    
+    console.log("🔍 Opción encontrada:", selectedOption);
+    
+    // Llamar al onChange con el objeto completo {value, label}
+    if (onChange) {
+      onChange(selectedOption);
+    }
+  };
 
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={selectId} className="block text-gray-700 text-sm font-medium mb-2">
+        <label className="block text-sm font-medium mb-1">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-
+      
       <select
-        id={selectId}
+        name={name}
+        value={typeof value === 'object' ? value?.value : value}
+        onChange={handleChange}
         disabled={disabled}
-        aria-invalid={!!error}
-        aria-describedby={errorId}
         className={`
           w-full px-4 py-2 border rounded-lg bg-white
           focus:outline-none focus:ring-2 focus:ring-purple-300
@@ -38,19 +63,18 @@ export default function Select({
         `}
         {...props}
       >
-        <option value="" disabled hidden>{placeholder}</option>
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
       </select>
-
+      
       {error && (
-        <p id={errorId} className="text-red-500 text-sm mt-1 flex items-center gap-1">
-          <span aria-hidden="true">⚠️</span> {error}
-        </p>
+        <p className="text-red-500 text-xs mt-1">{error}</p>
       )}
     </div>
   );
 }
+
+export default Select;

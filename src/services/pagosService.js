@@ -9,7 +9,7 @@ import {
   doc 
 } from 'firebase/firestore';
 
-// Obtener pagos del usuario (buscando por userId como email O como uid)
+// Obtener pagos del usuario
 export const obtenerPagos = async (userId) => {
   try {
     const q = query(

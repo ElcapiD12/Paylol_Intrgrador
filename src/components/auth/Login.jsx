@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import  Input  from '../shared/Input';
-import  Card  from '../shared/Card';
-import  Alert  from '../shared/Alert';
+import Input from '../shared/Input';
+import Card from '../shared/Card';
+import Alert from '../shared/Alert';
 import { validarLogin } from '../../utils/validators';
 import { loginUsuario } from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { ROLE_DEFAULT_ROUTE } from '../../utils/constants';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -28,20 +29,29 @@ function Login() {
     setLoading(true);
     setMensaje({ tipo: '', texto: '' });
 
-    const resultado = await loginUsuario(email, password);
+    try {
+      const resultado = await loginUsuario(email, password);
+
+      if (resultado.success) {
+        // ✅ Llamar login para actualizar el contexto inmediatamente
+        login(resultado.user);
+        
+        setMensaje({ tipo: 'success', texto: '¡Inicio de sesión exitoso!' });
+
+        setTimeout(() => {
+          const rol = resultado.user.rol || "alumno";
+          const ruta = ROLE_DEFAULT_ROUTE[rol] || "/dashboard";
+          navigate(ruta);
+        }, 1000);
+      } else {
+        setMensaje({ tipo: 'error', texto: resultado.error });
+      }
+    } catch (error) {
+      console.error("Error en login:", error);
+      setMensaje({ tipo: 'error', texto: 'Error inesperado al iniciar sesión' });
+    }
 
     setLoading(false);
-
-    if (resultado.success) {
-      login(resultado.user);
-      setMensaje({ tipo: 'success', texto: '¡Inicio de sesión exitoso!' });
-
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1000);
-    } else {
-      setMensaje({ tipo: 'error', texto: resultado.error });
-    }
   };
 
   return (
@@ -49,7 +59,6 @@ function Login() {
       <Card className="w-full max-w-sm original-card px-8 py-10">
         <div className="text-center mb-8">
           <h2 className="text-3xl original-title mb-1">Iniciar Sesión</h2>
-          {/* Subtítulo PAY-LOL con el color cian */}
           <p className="text-lg original-subtitle">
             <span className="font-normal">PAY-LOL</span>
           </p>
@@ -88,7 +97,6 @@ function Login() {
             className="original-input"
           />
 
-          {/* Botón principal (Iniciar Sesión) */}
           <button
             type="submit"
             className="w-full font-semibold btn-original-primary text-white py-3 px-4 rounded-md transition duration-300" 
@@ -105,7 +113,6 @@ function Login() {
           >
             ¿Olvidaste tu contraseña?
           </button>
-          {/* ELIMINADO: Botón "us se" */}
         </div>
 
         <div className="mt-8 text-center flex justify-center items-center">

@@ -1,4 +1,3 @@
-
 // Colores del sistema
 export const COLORS = {
   primary: '#3B82F6',
@@ -20,7 +19,7 @@ export const TIPOS_PAGO = {
   REMEDIAL: 'remedial',
 };
 
-// Montos de pagos (ejemplo - ajustar según necesidad)
+// Montos de pagos
 export const MONTOS = {
   [TIPOS_PAGO.COLEGIATURA]: 5000,
   [TIPOS_PAGO.INSCRIPCION]: 3000,
@@ -30,8 +29,6 @@ export const MONTOS = {
   [TIPOS_PAGO.EXTRAORDINARIO]: 600,
   [TIPOS_PAGO.REMEDIAL]: 400,
 };
-
-
 
 // Estados de solicitudes
 export const ESTADOS_SOLICITUD = {
@@ -85,8 +82,7 @@ export const MENSAJES_EXITO = {
   REGISTRO_EXITOSO: 'Registro completado exitosamente',
 };
 
-
-// Estados de extraordinarios (agregado de Montse)
+// Estados de extraordinarios
 export const ESTADOS_EXTRAORDINARIO = {
   DISPONIBLE: 'Disponible',
   SOLICITADO: 'Solicitado',
@@ -94,7 +90,6 @@ export const ESTADOS_EXTRAORDINARIO = {
   RECHAZADO: 'Rechazado',
   PAGADO: 'Pagado',
 };
-// AGREGAR AL FINAL DE utils/constants.js
 
 // Información bancaria de la institución
 export const DATOS_BANCARIOS = {
@@ -104,6 +99,8 @@ export const DATOS_BANCARIOS = {
   clabe: '012180001234567890',
   concepto: 'PAGO DE CONSTANCIA',
 };
+
+// Estados de pago
 export const ESTADOS_PAGO = {
   PENDIENTE_PAGO: 'pendiente_pago',
   COMPROBANTE_SUBIDO: 'comprobante_subido',
@@ -111,4 +108,14 @@ export const ESTADOS_PAGO = {
   PAGADO: 'pagado',
   RECHAZADO: 'rechazado',
   VENCIDO: 'vencido',
+};
+
+// 🔹 Rutas por defecto según rol
+export const ROLE_DEFAULT_ROUTE = {
+  alumno: "/dashboard",
+  jefe_carrera: "/dashboard/jefatura",
+  admin_pagos: "/dashboard/pagos",
+  admin_idiomas: "/dashboard/admin-idiomas",
+  admin_servicios: "/dashboard/servicios-escolares",
+  admin: "/dashboard/admin-usuarios",
 };
