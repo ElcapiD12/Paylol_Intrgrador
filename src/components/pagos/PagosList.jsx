@@ -44,14 +44,14 @@ function PagosList() {
       } else {
         setAlerta({
           tipo: 'error',
-          mensaje: '❌ Error al cargar pagos: ' + resultado.error
+          mensaje: 'Error al cargar pagos: ' + resultado.error
         });
       }
     } catch (error) {
       console.error('Error al cargar pagos:', error);
       setAlerta({
         tipo: 'error',
-        mensaje: '❌ Error al conectar con el servidor'
+        mensaje: 'Error al conectar con el servidor'
       });
     } finally {
       setCargando(false);
@@ -59,18 +59,26 @@ function PagosList() {
   };
 
   const handlePagarClick = (pago) => {
-    console.log('🟢 Botón Pagar clickeado para:', pago.concepto);
+    console.log('Boton Pagar clickeado para:', pago.concepto);
     setPagoSeleccionado(pago);
     setShowModalPago(true);
   };
 
   const handlePagoExitoso = async (datosPago) => {
     try {
+      // Calcular monto final (con recargo si está vencido)
+      const montoBase = parseFloat(pagoSeleccionado.monto);
+      const tieneRecargo = estaVencido(pagoSeleccionado.fechaVencimiento);
+      const montoFinal = tieneRecargo ? montoBase + 50 : montoBase;
+      
       // Actualizar estado del pago en Firestore con datos adicionales
       const datosActualizacion = {
         folio: datosPago.folio,
         metodoPago: datosPago.metodo,
-        referencia: datosPago.referencia
+        referencia: datosPago.referencia,
+        montoOriginal: montoBase,
+        recargo: tieneRecargo ? 50 : 0,
+        montoTotal: montoFinal
       };
       
       const resultado = await actualizarPago(
@@ -88,7 +96,9 @@ function PagosList() {
                 estado: ESTADOS_PAGO.PAGADO, 
                 fechaPago: new Date().toISOString(),
                 folio: datosPago.folio,
-                metodoPago: datosPago.metodo
+                metodoPago: datosPago.metodo,
+                montoTotal: montoFinal,
+                recargo: tieneRecargo ? 50 : 0
               }
             : p
         );
@@ -98,16 +108,22 @@ function PagosList() {
         setShowModalPago(false);
         
         // Mostrar alerta de éxito
+        const mensajeExito = tieneRecargo 
+          ? `Pago procesado exitosamente (incluye recargo de $50.00)`
+          : MENSAJES_EXITO.PAGO_EXITOSO || 'Pago procesado exitosamente';
+        
         setAlerta({
           tipo: 'success',
-          mensaje: MENSAJES_EXITO.PAGO_EXITOSO || '✅ Pago procesado exitosamente'
+          mensaje: mensajeExito
         });
         
         // Preparar datos para el recibo
         const datosRecibo = {
           ...datosPago,
           concepto: pagoSeleccionado.concepto,
-          monto: pagoSeleccionado.monto,
+          monto: montoFinal,
+          montoOriginal: montoBase,
+          recargo: tieneRecargo ? 50 : 0,
           fecha: new Date().toLocaleDateString('es-MX'),
           estudiante: usuarioActual.nombre,
           matricula: usuarioActual.matricula
@@ -126,14 +142,14 @@ function PagosList() {
       } else {
         setAlerta({
           tipo: 'error',
-          mensaje: '❌ Error al procesar el pago: ' + resultado.error
+          mensaje: 'Error al procesar el pago: ' + resultado.error
         });
       }
     } catch (error) {
       console.error('Error al procesar pago:', error);
       setAlerta({
         tipo: 'error',
-        mensaje: '❌ Error al guardar el pago'
+        mensaje: 'Error al guardar el pago'
       });
     }
   };
@@ -166,7 +182,7 @@ function PagosList() {
 
   const getIconoTipo = (tipo) => {
     switch (tipo) {
-      case TIPOS_PAGO.COLEGIATURA: return '🏫';
+      case TIPOS_PAGO.COLEGIATURA: return '🏫'; // Mantenemos el emoji aquí por ser un caso especial que no parece un error de código.
       case TIPOS_PAGO.INSCRIPCION: return '📝';
       case TIPOS_PAGO.CONSTANCIA: return '📄';
       case TIPOS_PAGO.LIBRO_INGLES: return '📚';
@@ -183,7 +199,7 @@ function PagosList() {
   if (cargando) {
     return (
       <div className="text-center py-12">
-        <div className="text-4xl mb-4">⏳</div>
+        <div className="text-4xl mb-4"></div>
         <p className="text-gray-600">Cargando tus pagos...</p>
       </div>
     );
@@ -225,12 +241,12 @@ function PagosList() {
       {/* Pagos Pendientes */}
       <div className="mb-10">
         <h3 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
-          <span className="mr-2">⏳</span> Pagos Pendientes
+          <span className="mr-2"></span> Pagos Pendientes
         </h3>
         
         {pagosPendientes.length === 0 ? (
           <Card className="text-center py-8">
-            <div className="text-4xl mb-4">🎉</div>
+            <div className="text-4xl mb-4"></div>
             <p className="text-gray-600">¡No tienes pagos pendientes!</p>
           </Card>
         ) : (
@@ -259,6 +275,24 @@ function PagosList() {
                     <span className="text-2xl font-bold text-blue-600">{formatCurrency(pago.monto)}</span>
                   </div>
                   
+                  {/* Mostrar recargo si está vencido */}
+                  {estaVencido(pago.fechaVencimiento) && (
+                    <div className="flex justify-between items-center bg-red-50 p-2 rounded">
+                      <span className="text-red-600 font-medium">Recargo:</span>
+                      <span className="text-xl font-bold text-red-600">+ $50.00</span>
+                    </div>
+                  )}
+                  
+                  {/* Total a pagar (con recargo si aplica) */}
+                  {estaVencido(pago.fechaVencimiento) && (
+                    <div className="flex justify-between items-center border-t pt-2">
+                      <span className="text-gray-800 font-bold">Total a pagar:</span>
+                      <span className="text-2xl font-bold text-red-600">
+                        {formatCurrency(parseFloat(pago.monto) + 50)}
+                      </span>
+                    </div>
+                  )}
+                  
                   <div className="flex justify-between">
                     <span className="text-gray-600">Vencimiento:</span>
                     <span className={`font-medium ${estaVencido(pago.fechaVencimiento) ? 'text-red-600' : 'text-gray-800'}`}>
@@ -277,21 +311,18 @@ function PagosList() {
                   
                   {estaVencido(pago.fechaVencimiento) && (
                     <div className="bg-red-50 text-red-700 p-2 rounded text-sm mt-2">
-                      ⚠️ Este pago está vencido
+                      Este pago está vencido. Se aplicará un recargo de $50.00
                     </div>
                   )}
                 </div>
                 
                 <button
                   onClick={() => handlePagarClick(pago)}
-                  disabled={estaVencido(pago.fechaVencimiento)}
-                  className={`w-full mt-4 font-bold py-3 rounded-lg transition ${
-                    estaVencido(pago.fechaVencimiento)
-                      ? 'bg-gray-300 cursor-not-allowed text-gray-600'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white'
-                  }`}
+                  className="w-full mt-4 font-bold py-3 rounded-lg transition bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  {estaVencido(pago.fechaVencimiento) ? 'Contactar administración' : '💳 Pagar Ahora'}
+                  {estaVencido(pago.fechaVencimiento) 
+                    ? `Pagar con Recargo (${(parseFloat(pago.monto) + 50).toFixed(2)})` 
+                    : 'Pagar Ahora'}
                 </button>
               </Card>
             ))}
@@ -303,7 +334,7 @@ function PagosList() {
       {pagosVencidos.length > 0 && (
         <div className="mb-10">
           <h3 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
-            <span className="mr-2">⚠️</span> Pagos Vencidos
+            <span className="mr-2"></span> Pagos Vencidos
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {pagosVencidos.map((pago) => (
@@ -319,7 +350,7 @@ function PagosList() {
                   onClick={() => alert('Por favor, contacta a Servicios Escolares para regularizar tu situación')}
                   className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg"
                 >
-                  📞 Contactar soporte
+                  Contactar soporte
                 </button>
               </Card>
             ))}
@@ -331,7 +362,7 @@ function PagosList() {
       {pagosPagados.length > 0 && (
         <div>
           <h3 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
-            <span className="mr-2">✅</span> Pagos Completados
+            <span className="mr-2"></span> Pagos Completados
           </h3>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white border rounded-lg">
@@ -360,7 +391,7 @@ function PagosList() {
                         onClick={() => handleReimprimirRecibo(pago)}
                         className="text-blue-600 hover:text-blue-800 font-medium underline"
                       >
-                        📄 Reimprimir recibo
+                        Reimprimir recibo
                       </button>
                     </td>
                   </tr>
@@ -391,10 +422,10 @@ function PagosList() {
         <Modal 
           isOpen={showModalRecibo} 
           onClose={() => setShowModalRecibo(false)} 
-          title="🎉 Pago Completado"
+          title="Pago Completado"
         >
           <div className="text-center">
-            <div className="text-5xl mb-4">✅</div>
+            <div className="text-5xl mb-4"></div>
             <h3 className="text-xl font-bold text-green-700 mb-2">¡Pago Exitoso!</h3>
             <p className="text-gray-600 mb-4">
               Tu recibo ha sido generado y descargado automáticamente.
@@ -410,7 +441,7 @@ function PagosList() {
                 onClick={() => Recibo.generarPDF(reciboData)}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
               >
-                📄 Descargar de nuevo
+                Descargar de nuevo
               </button>
               <button
                 onClick={() => setShowModalRecibo(false)}

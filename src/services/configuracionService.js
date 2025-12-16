@@ -18,7 +18,7 @@ const CONFIGURACION_DEFAULT = {
   
   // Configuración de fechas y recargos
   recargo: 50,
-  diaCorte: 15,
+  diaCorte: 16,  // ← CAMBIADO de 15 a 16
   
   // Metadata
   ultimaActualizacion: new Date().toISOString(),
@@ -65,7 +65,7 @@ export const actualizarConfiguracion = async (nuevaConfig, adminId = 'admin') =>
     // Usar setDoc con merge para crear o actualizar
     await setDoc(docRef, dataActualizada, { merge: true });
     
-    console.log('Configuración guardada exitosamente:', dataActualizada);
+    console.log('✅ Configuración guardada exitosamente:', dataActualizada);
     
     return { success: true, data: dataActualizada };
   } catch (error) {
@@ -164,7 +164,7 @@ export const generarFechaVencimiento = async (mes, anio) => {
     }
     
     const config = result.data;
-    const diaCorte = config.diaCorte || 15;
+    const diaCorte = config.diaCorte || 16;
     
     // Si mes es un número (1-12)
     let mesNumero;
