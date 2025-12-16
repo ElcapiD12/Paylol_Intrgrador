@@ -1,4 +1,6 @@
+// src/components/pagos/PagosList.jsx
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext'; // AGREGADO
 import { Card, Button, Badge, Modal, Alert } from '../shared';
 import { formatCurrency, formatDate, estaVencido, diasRestantes, generarFolio } from '../../utils/helpers';
 import { ESTADOS_PAGO, TIPOS_PAGO, MENSAJES_EXITO } from '../../utils/constants';
@@ -7,6 +9,8 @@ import PagoForm from './PagoForm';
 import Recibo from './Recibo';
 
 function PagosList() {
+  const { usuario } = useAuth(); // AGREGADO - Obtener usuario real
+  
   const [pagos, setPagos] = useState([]);
   const [pagoSeleccionado, setPagoSeleccionado] = useState(null);
   const [showModalPago, setShowModalPago] = useState(false);
@@ -15,19 +19,20 @@ function PagosList() {
   const [alerta, setAlerta] = useState(null);
   const [cargando, setCargando] = useState(true);
 
-  // DATOS DEL USUARIO ACTUAL
-  // TODO: Reemplazar con datos reales de autenticación (Programador 1)
+  // DATOS DEL USUARIO ACTUAL - AHORA DESDE AUTH CONTEXT
   const usuarioActual = {
-    id: "user123", // Este debería venir de Firebase Auth
-    nombre: "Juan Pérez",
-    matricula: "A12345678",
-    email: "juan.perez@universidad.mx"
+    id: usuario?.uid || usuario?.id, // UID de Firebase
+    nombre: usuario?.nombre || 'Usuario',
+    matricula: usuario?.matricula || 'Sin matrícula',
+    email: usuario?.email || 'sin@email.com'
   };
 
   // Cargar pagos desde Firestore
   useEffect(() => {
-    cargarPagos();
-  }, []);
+    if (usuarioActual.id) {
+      cargarPagos();
+    }
+  }, [usuarioActual.id]);
 
   const cargarPagos = async () => {
     setCargando(true);

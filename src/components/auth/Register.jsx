@@ -49,10 +49,25 @@ function Register() {
     { value: '9', label: '9no Cuatrimestre' }
   ];
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errores[e.target.name]) {
-      setErrores({ ...errores, [e.target.name]: '' });
+  // 🔧 Nuevo handleChange que soporta Input y Select
+  const handleChange = (eOrOption) => {
+    // Caso Input normal
+    if (eOrOption?.target) {
+      const { name, value } = eOrOption.target;
+      setFormData({ ...formData, [name]: value });
+      if (errores[name]) {
+        setErrores({ ...errores, [name]: '' });
+      }
+    } else {
+      // Caso Select (objeto {value, label})
+      const { value } = eOrOption;
+      if (carreras.some(opt => opt.value === value)) {
+        setFormData({ ...formData, carrera: value });
+        if (errores.carrera) setErrores({ ...errores, carrera: '' });
+      } else if (semestres.some(opt => opt.value === value)) {
+        setFormData({ ...formData, cuatrimestre: value });
+        if (errores.cuatrimestre) setErrores({ ...errores, cuatrimestre: '' });
+      }
     }
   };
 
@@ -66,7 +81,6 @@ function Register() {
     setMensaje({ tipo: '', texto: '' });
 
     try {
-      // Crear usuario en Firebase Auth
       console.log("Creando usuario en Firebase Auth...");
       const resultadoAuth = await registrarUsuario(formData.email, formData.password);
       
@@ -77,8 +91,6 @@ function Register() {
       }
 
       console.log("Usuario creado en Auth. UID:", resultadoAuth.user.uid);
-
-      // Guardar datos en Firestore USANDO EL UID COMO ID DEL DOCUMENTO
       console.log("Guardando documento en Firestore: usuarios/" + resultadoAuth.user.uid);
       
       const resultadoUser = await crearUsuario(resultadoAuth.user.uid, {
@@ -93,7 +105,6 @@ function Register() {
       if (resultadoUser.success) {
         console.log("Documento creado exitosamente en Firestore");
         
-        // Login manual para actualizar contexto inmediatamente
         login({
           uid: resultadoAuth.user.uid,
           email: formData.email,
@@ -159,26 +170,27 @@ function Register() {
             />
 
             <Select 
-              label={<span className="text-white">Carrera *</span>} 
-              name="carrera" 
-              options={carreras}
-              value={formData.carrera} 
-              onChange={handleChange} 
-              error={errores.carrera} 
-              required 
-              className="original-input" 
-            />
+            label={<span className="text-white">Carrera *</span>} 
+            name="carrera" 
+            options={carreras}
+            value={formData.carrera} 
+            onChange={handleChange} 
+            error={errores.carrera} 
+            required 
+            className="bg-gray-700 text-white border-gray-500 rounded-lg"
+          />
 
-            <Select 
-              label={<span className="text-white">Cuatrimestre *</span>} 
-              name="cuatrimestre" 
-              options={semestres}
-              value={formData.cuatrimestre} 
-              onChange={handleChange} 
-              error={errores.cuatrimestre} 
-              required 
-              className="original-input" 
-            />
+          <Select 
+            label={<span className="text-white">Cuatrimestre *</span>} 
+            name="cuatrimestre" 
+            options={semestres}
+            value={formData.cuatrimestre} 
+            onChange={handleChange} 
+            error={errores.cuatrimestre} 
+            required 
+            className="bg-gray-700 text-white border-gray-500 rounded-lg"
+          />
+
 
             <Input 
               label={<span className="text-white">Correo Electrónico *</span>} 

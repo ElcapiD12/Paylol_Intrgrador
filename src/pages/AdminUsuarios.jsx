@@ -25,10 +25,10 @@ function AdminUsuarios() {
     return () => unsubscribe();
   }, []);
 
-  // 🔑 Cambiar rol: siempre guardar string
+  // Cambiar rol: siempre guardar string
   const cambiarRol = async (id, nuevoRol) => {
     try {
-      console.log("🔄 Intentando cambiar rol:");
+      console.log("Intentando cambiar rol:");
       console.log("  - Usuario ID:", id);
       console.log("  - Nuevo rol:", nuevoRol);
       console.log("  - Mi UID:", user?.uid);
@@ -36,16 +36,16 @@ function AdminUsuarios() {
       
       await updateDoc(doc(db, "usuarios", id), { rol: nuevoRol });
       
-      console.log("✅ Rol actualizado exitosamente");
-      alert(`✅ Rol actualizado exitosamente a ${nuevoRol}`);
+      console.log("Rol actualizado exitosamente");
+      alert(`Rol actualizado exitosamente a ${nuevoRol}`);
     } catch (err) {
-      console.error("❌ Error al cambiar rol:", err);
+      console.error(" Error al cambiar rol:", err);
       console.error("Código de error:", err.code);
       console.error("Mensaje:", err.message);
       
       if (err.code === "permission-denied") {
         alert(
-          "❌ Permiso denegado\n\n" +
+          " Permiso denegado\n\n" +
           "Posibles causas:\n" +
           "1. Tu documento de usuario no existe en Firestore con tu UID\n" +
           "2. Tu rol no es 'admin'\n" +
@@ -56,7 +56,7 @@ function AdminUsuarios() {
           `usuarios/${user?.uid}`
         );
       } else {
-        alert("❌ No se pudo cambiar el rol. Error: " + err.message);
+        alert(" No se pudo cambiar el rol. Error: " + err.message);
       }
     }
   };
@@ -68,20 +68,53 @@ function AdminUsuarios() {
       return;
     }
 
-    const confirmar = window.confirm("¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.");
+    const usuarioAEliminar = usuarios.find(u => u.id === id);
+    
+    const confirmar = window.confirm(
+      `¿Estás seguro de eliminar a ${usuarioAEliminar?.nombre || usuarioAEliminar?.email}?\n\n` +
+      `Esto eliminará:\n` +
+      `✓ Su documento en Firestore\n` +
+      `✓ Su cuenta de autenticación\n\n` +
+      `Esta acción NO se puede deshacer.`
+    );
+    
     if (!confirmar) return;
 
     try {
+      console.log("Eliminando usuario:", id);
+      
+      // Eliminar documento de Firestore
       await deleteDoc(doc(db, "usuarios", id));
-      console.log(`Usuario ${id} eliminado`);
-      alert("Usuario eliminado exitosamente");
+      console.log("Documento eliminado de Firestore");
+      
+      // IMPORTANTE: También debemos eliminar de Firebase Auth
+      // Pero esto solo se puede hacer desde el backend (Cloud Functions)
+      // Por ahora, solo avisamos al admin
+      
+      alert(
+        `Usuario eliminado de Firestore\n\n` +
+        `IMPORTANTE:\n` +
+        `Para eliminarlo completamente de Firebase Authentication, debes:\n\n` +
+        `1. Ir a Firebase Console\n` +
+        `2. Authentication → Users\n` +
+        `3. Buscar: ${usuarioAEliminar?.email}\n` +
+        `4. Click en "..." → Delete account\n\n` +
+        `Si no lo eliminas de Authentication, no se podrá registrar de nuevo con ese email.`
+      );
+      
+      console.log("Recuerda eliminar también de Firebase Authentication");
     } catch (err) {
-      console.error("Error al eliminar usuario:", err);
+      console.error(" Error al eliminar usuario:", err);
+      console.error("Código de error:", err.code);
+      console.error("Mensaje:", err.message);
       
       if (err.code === "permission-denied") {
-        alert("No tienes permisos para eliminar usuarios. Solo los administradores pueden hacerlo.");
+        alert(
+          " Permiso denegado\n\n" +
+          "No tienes permisos para eliminar usuarios. Solo los administradores pueden hacerlo."
+        );
       } else {
-        alert("No se pudo eliminar el usuario. Verifica tu conexión o permisos.");
+        alert(" No se pudo eliminar el usuario. Error: " + err.message);
       }
     }
   };
@@ -106,15 +139,15 @@ function AdminUsuarios() {
     try {
       setGuardando(true);
       
-      // 🔑 Crear usuario en Firebase Auth
+      // Crear usuario en Firebase Auth
       const auth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(
         auth, 
         email, 
-        "Temporal123!" // ⚠️ Contraseña temporal
+        "Temporal123!" // Contraseña temporal
       );
       
-      // 🔑 Crear documento en Firestore con el mismo UID
+      // Crear documento en Firestore con el mismo UID
       await setDoc(doc(db, "usuarios", userCredential.user.uid), {
         email,
         nombre,
@@ -127,22 +160,22 @@ function AdminUsuarios() {
       setMostrarForm(false);
       
       alert(
-        `✅ Usuario creado exitosamente\n\n` +
-        `📧 Email: ${email}\n` +
-        `🔑 Contraseña temporal: Temporal123!\n\n` +
-        `⚠️ El usuario debe cambiar su contraseña al iniciar sesión.`
+        `Usuario creado exitosamente\n\n` +
+        `Email: ${email}\n` +
+        `Contraseña temporal: Temporal123!\n\n` +
+        `El usuario debe cambiar su contraseña al iniciar sesión.`
       );
     } catch (err) {
       console.error("Error al crear usuario:", err);
       
       if (err.code === "auth/email-already-in-use") {
-        alert("❌ Este correo ya está registrado en el sistema");
+        alert(" Este correo ya está registrado en el sistema");
       } else if (err.code === "auth/weak-password") {
-        alert("❌ La contraseña es demasiado débil");
+        alert(" La contraseña es demasiado débil");
       } else if (err.code === "permission-denied") {
-        alert("❌ No tienes permisos para crear usuarios. Solo los administradores pueden hacerlo.");
+        alert("No tienes permisos para crear usuarios. Solo los administradores pueden hacerlo.");
       } else {
-        alert(`❌ Error: ${err.message}`);
+        alert(`Error: ${err.message}`);
       }
     } finally {
       setGuardando(false);
@@ -182,7 +215,7 @@ function AdminUsuarios() {
         {/* Mensaje de advertencia si no es admin */}
         {!esAdmin && (
           <div className="mb-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
-            <p className="font-bold">⚠️ Acceso limitado</p>
+            <p className="font-bold">Acceso limitado</p>
             <p className="text-sm">Solo puedes ver usuarios. Para modificarlos necesitas rol de Administrador.</p>
           </div>
         )}
@@ -243,7 +276,12 @@ function AdminUsuarios() {
             <Select
               value={opcionesRol.find(opt => opt.value === nuevoUsuario.rol)}
               options={opcionesRol}
-              onChange={(option) => setNuevoUsuario({ ...nuevoUsuario, rol: option.value })}
+              onChange={(option) => {
+                console.log("Select onChange en formulario:", option);
+                if (option && option.value) {
+                  setNuevoUsuario({ ...nuevoUsuario, rol: option.value });
+                }
+              }}
               className="text-sm text-blue-900 mb-3"
             />
             
@@ -256,7 +294,7 @@ function AdminUsuarios() {
                   guardando ? "bg-green-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
                 } text-white px-4 py-2 rounded flex-1`}
               >
-                {guardando ? "⏳ Creando..." : "✅ Guardar Usuario"}
+                {guardando ? "Creando..." : "Guardar Usuario"}
               </Button>
               
               <Button
@@ -272,7 +310,7 @@ function AdminUsuarios() {
             </div>
             
             <p className="text-xs text-gray-600 mt-2">
-              ℹ️ La contraseña temporal será <strong>Temporal123!</strong>
+              La contraseña temporal será <strong>Temporal123!</strong>
             </p>
           </div>
         )}
@@ -311,13 +349,13 @@ function AdminUsuarios() {
                         }
                         
                         // 🔍 DEBUG: Ver qué llega
-                        console.log("📋 Select onChange:");
+                        console.log("Select onChange:");
                         console.log("  - option:", option);
                         console.log("  - option.value:", option?.value);
                         
                         // Validar que option y option.value existan
                         if (!option || !option.value) {
-                          console.error("❌ Error: option o option.value es undefined");
+                          console.error("Error: option o option.value es undefined");
                           alert("Error al seleccionar el rol");
                           return;
                         }
@@ -344,7 +382,7 @@ function AdminUsuarios() {
                           : "bg-red-600 hover:bg-red-700"
                       } text-white text-sm px-3 py-1 rounded transition-colors`}
                     >
-                      🗑️ Eliminar
+                       Eliminar
                     </Button>
                   </td>
                 </tr>
@@ -360,7 +398,7 @@ function AdminUsuarios() {
           </table>
         </div>
 
-        {/* 📑 Paginación */}
+        {/*  Paginación */}
         {totalPaginas > 1 && (
           <div className="mt-4 flex justify-center gap-4 items-center">
             <button
